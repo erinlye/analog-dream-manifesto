@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -19,6 +20,25 @@ export default {
 		},
 		extend: {
 			colors: {
+				paper: {
+					50: '#FFFDF8',
+					100: '#F7F3EE',
+					200: '#EBE6DE',
+					300: '#D8CFBF',
+					400: '#B8AE9E',
+				},
+				ink: {
+					300: '#7C7670',
+					400: '#5A5652',
+					500: '#3A3631',
+					600: '#2A2622',
+					700: '#1A1612',
+				},
+				accent: {
+					300: '#A7BED3',
+					400: '#86A1B6',
+					500: '#607B93',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -63,6 +83,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				'serif': ['EB Garamond', 'Georgia', 'serif'],
+				'sans': ['Inter', 'system-ui', 'sans-serif'],
+				'mono': ['IBM Plex Mono', 'monospace'],
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -84,11 +109,16 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 1s ease-out'
 			}
 		}
 	},
