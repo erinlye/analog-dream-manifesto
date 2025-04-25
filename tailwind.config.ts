@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -82,7 +83,7 @@ export default {
         },
       },
       fontFamily: {
-        'serif': ['"Times New Roman"', 'Times', 'serif'],
+        'serif': ['Verdana', 'Arial', 'sans-serif'],
         'sans': ['Verdana', 'Arial', 'system-ui', 'sans-serif'],
         'mono': ['Courier New', 'monospace'],
       },
