@@ -1,46 +1,20 @@
 import type { Config } from "tailwindcss";
 
 export default {
-	darkMode: ["class"],
-	content: [
-		"./pages/**/*.{ts,tsx}",
-		"./components/**/*.{ts,tsx}",
-		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
-	],
-	prefix: "",
-	theme: {
-		container: {
-			center: true,
-			padding: '2rem',
-			screens: {
-				'2xl': '1400px'
-			}
-		},
-		extend: {
-			colors: {
-				paper: {
-					50: '#FFFDF8',
-					100: '#F7F3EE',
-					200: '#EBE6DE',
-					300: '#D8CFBF',
-					400: '#B8AE9E',
-				},
-				ink: {
-					300: '#7C7670',
-					400: '#5A5652',
-					500: '#3A3631',
-					600: '#2A2622',
-					700: '#1A1612',
-				},
-				accent: {
-					300: '#A7BED3',
-					400: '#86A1B6',
-					500: '#607B93',
-				},
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
+  prefix: "",
+  theme: {
+    extend: {
+      colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
@@ -83,14 +57,36 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
-			},
-			fontFamily: {
-				'serif': ['"Times New Roman"', 'Times', 'serif'],
-				'sans': ['Verdana', 'Arial', 'system-ui', 'sans-serif'],
-				'mono': ['Courier New', 'monospace'],
-			},
-			borderRadius: {
+				},
+        paper: {
+          50: '#FFFFFF',
+          100: '#FFFFFF',
+          200: '#F0F0F0',
+          300: '#E0E0E0',
+          400: '#CCCCCC',
+        },
+        ink: {
+          300: '#666666',
+          400: '#444444',
+          500: '#333333',
+          600: '#222222',
+          700: '#111111',
+        },
+        accent: {
+          300: '#6699CC',
+          400: '#336699',
+          500: '#003366',
+          600: '#003366',
+          DEFAULT: '#003366',
+          foreground: '#FFFFFF'
+        },
+      },
+      fontFamily: {
+        'serif': ['"Times New Roman"', 'Times', 'serif'],
+        'sans': ['Verdana', 'Arial', 'system-ui', 'sans-serif'],
+        'mono': ['Courier New', 'monospace'],
+      },
+      borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
@@ -122,7 +118,7 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 1s ease-out'
 			}
-		}
-	},
-	plugins: [require("tailwindcss-animate")],
+    }
+  },
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -80,29 +81,29 @@
     @apply border-border;
   }
   body {
-    @apply bg-paper-50 text-ink-500;
+    @apply bg-white text-black;
     font-family: Verdana, Arial, sans-serif;
   }
   h1, h2, h3, h4 {
     font-family: "Times New Roman", Times, serif;
-    @apply font-normal;
+    @apply font-bold text-ink-600;
   }
 }
 
 @layer components {
   .analog-input {
-    @apply bg-paper-100 border-ink-300/30 px-4 py-3 rounded-sm focus:border-ink-400 focus:ring-0 focus-visible:outline-none transition-colors;
+    @apply bg-white border-2 border-gray-300 px-3 py-2 rounded focus:border-blue-500 focus:ring-0 focus-visible:outline-none;
   }
   .analog-button {
-    @apply bg-ink-500 text-paper-50 px-6 py-3 rounded-sm hover:bg-ink-600 active:bg-ink-700 transition-colors font-medium;
+    @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 active:bg-blue-700 font-bold uppercase text-sm;
   }
   .analog-link {
-    @apply text-accent-600 underline decoration-1 underline-offset-4 hover:text-accent-400;
+    @apply text-blue-600 underline hover:text-blue-800;
   }
   .analog-container {
-    @apply max-w-4xl mx-auto px-4 sm:px-6 py-8;
+    @apply max-w-4xl mx-auto px-4 py-6 bg-white;
   }
   .analog-paper {
-    @apply bg-paper-100 p-6 border border-paper-300/40 rounded-sm shadow-sm;
+    @apply bg-white p-4 border-2 border-gray-300 rounded;
   }
 }
