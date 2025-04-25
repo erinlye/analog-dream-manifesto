@@ -86,9 +86,9 @@ export default {
 				}
 			},
 			fontFamily: {
-				'serif': ['EB Garamond', 'Georgia', 'serif'],
-				'sans': ['Inter', 'system-ui', 'sans-serif'],
-				'mono': ['IBM Plex Mono', 'monospace'],
+				'serif': ['"Times New Roman"', 'Times', 'serif'],
+				'sans': ['Verdana', 'Arial', 'system-ui', 'sans-serif'],
+				'mono': ['Courier New', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
