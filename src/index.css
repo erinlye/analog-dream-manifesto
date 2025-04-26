@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -81,7 +80,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient-to-b from-paper-50 to-paper-200 min-h-screen text-ink-600;
+    @apply bg-gradient-to-b from-[#F2FCE2] to-[#E5DEFF] min-h-screen text-ink-600;
     font-family: 'Courier New', monospace;
     text-transform: lowercase;
   }
