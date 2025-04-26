@@ -1,6 +1,8 @@
 
 import Navigation from '../components/Navigation';
 import AnalogQuestion from '../components/AnalogQuestion';
+import PseudonymGenerator from '../components/PseudonymGenerator';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   return (
@@ -9,11 +11,13 @@ const Index = () => {
       <main className="flex-1">
         <section className="analog-container py-16">
           <div className="mb-16 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif mb-6">A community for analog dreamers</h1>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif mb-6">a community for analog dreamers</h1>
             <p className="text-lg md:text-xl text-ink-400 max-w-2xl mx-auto">
-              We're building a platform to promote and communally learn how to live more analog lifestyles in our increasingly digital world.
+              we're building a platform to promote and communally learn how to live more analog lifestyles in our increasingly digital world.
             </p>
           </div>
+          
+          <PseudonymGenerator />
           
           <div className="max-w-2xl mx-auto">
             <AnalogQuestion />
@@ -47,8 +51,5 @@ const Index = () => {
     </div>
   );
 };
-
-// Add the Link import
-import { Link } from 'react-router-dom';
 
 export default Index;
