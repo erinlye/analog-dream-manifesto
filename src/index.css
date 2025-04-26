@@ -81,31 +81,31 @@
     @apply border-border;
   }
   body {
-    @apply bg-white text-black;
+    @apply bg-gradient-to-b from-paper-50 to-paper-200 min-h-screen text-ink-600;
     font-family: 'Courier New', monospace;
     text-transform: lowercase;
   }
   h1, h2, h3, h4 {
     font-family: 'Courier New', monospace;
-    @apply font-bold text-ink-600;
+    @apply font-bold text-accent bg-gradient-to-r from-accent-300 to-accent-600 bg-clip-text text-transparent;
     text-transform: lowercase;
   }
 }
 
 @layer components {
   .analog-input {
-    @apply bg-white border-2 border-gray-300 px-3 py-2 rounded focus:border-blue-500 focus:ring-0 focus-visible:outline-none;
+    @apply bg-white/80 backdrop-blur-sm border-2 border-accent-300 px-3 py-2 rounded-lg focus:border-accent-400 focus:ring-0 focus-visible:outline-none shadow-sm hover:shadow-md transition-all duration-300;
   }
   .analog-button {
-    @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 active:bg-blue-700 font-bold uppercase text-sm;
+    @apply bg-gradient-to-r from-accent-300 to-accent-400 text-white px-4 py-2 rounded-lg hover:from-accent-400 hover:to-accent-500 active:from-accent-500 active:to-accent-600 font-bold uppercase text-sm shadow-md hover:shadow-lg transition-all duration-300 animate-fade-in;
   }
   .analog-link {
-    @apply text-blue-600 underline hover:text-blue-800;
+    @apply text-accent-400 underline decoration-wavy underline-offset-4 hover:text-accent-500 transition-colors duration-300;
   }
   .analog-container {
-    @apply max-w-4xl mx-auto px-4 py-6 bg-white;
+    @apply max-w-4xl mx-auto px-4 py-6 bg-white/40 backdrop-blur-sm rounded-lg shadow-lg border border-white/50;
   }
   .analog-paper {
-    @apply bg-white p-4 border-2 border-gray-300 rounded;
+    @apply bg-white/90 backdrop-blur-sm p-4 border-2 border-accent-300/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300;
   }
 }
