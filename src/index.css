@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -81,11 +82,11 @@
   }
   body {
     @apply bg-white text-black;
-    font-family: Verdana, Arial, sans-serif;
+    font-family: 'Courier New', monospace;
     text-transform: lowercase;
   }
   h1, h2, h3, h4 {
-    font-family: Verdana, Arial, sans-serif;
+    font-family: 'Courier New', monospace;
     @apply font-bold text-ink-600;
     text-transform: lowercase;
   }

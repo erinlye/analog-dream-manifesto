@@ -83,8 +83,8 @@ export default {
         },
       },
       fontFamily: {
-        'serif': ['Verdana', 'Arial', 'sans-serif'],
-        'sans': ['Verdana', 'Arial', 'system-ui', 'sans-serif'],
+        'serif': ['Courier New', 'monospace'],
+        'sans': ['Courier New', 'monospace'],
         'mono': ['Courier New', 'monospace'],
       },
       borderRadius: {
