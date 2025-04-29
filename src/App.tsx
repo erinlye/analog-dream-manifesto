@@ -12,6 +12,7 @@ import Learning from "./pages/Learning";
 import Imagining from "./pages/Imagining";
 import Organizing from "./pages/Organizing";
 import Plugs from "./pages/Plugs";
+import Norms from "./pages/Norms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/imagining" element={<Imagining />} />
           <Route path="/organizing" element={<Organizing />} />
           <Route path="/plugs" element={<Plugs />} />
+          <Route path="/norms" element={<Norms />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

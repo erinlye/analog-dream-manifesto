@@ -41,6 +41,7 @@ const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) =>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>Imagining</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>Organizing</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>Plugs</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Norms</a>
             </>
           ) : (
             <>
@@ -51,6 +52,7 @@ const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) =>
               <Link to="/imagining" className={linkClass}>Imagining</Link>
               <Link to="/organizing" className={linkClass}>Organizing</Link>
               <Link to="/plugs" className={linkClass}>Plugs</Link>
+              <Link to="/norms" className={linkClass}>Norms</Link>
             </>
           )}
         </nav>
