@@ -12,3 +12,21 @@ export interface Community {
   memberCount: number;
   slug: string;
 }
+
+export interface ProjectComment {
+  id: string;
+  author: string;
+  content: string;
+  timestamp: number;
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  timestamp: number;
+  upvotes: number;
+  downvotes: number;
+  comments: ProjectComment[];
+}
