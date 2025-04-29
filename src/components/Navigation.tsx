@@ -1,7 +1,23 @@
 
 import { Link } from 'react-router-dom';
 
-const Navigation = () => {
+interface NavigationProps {
+  isDisabled?: boolean;
+  onDisabledClick?: () => void;
+}
+
+const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) => {
+  const handleDisabledClick = (e: React.MouseEvent) => {
+    if (isDisabled && onDisabledClick) {
+      e.preventDefault();
+      onDisabledClick();
+    }
+  };
+
+  const linkClass = isDisabled 
+    ? "text-white/60 cursor-not-allowed transition-colors" 
+    : "text-white hover:text-paper-100 transition-colors";
+
   return (
     <header className="bg-gradient-to-r from-[#6699CC] to-[#336699] shadow-lg">
       <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -15,14 +31,28 @@ const Navigation = () => {
         </div>
         
         <nav className="md:flex items-center gap-6 hidden">
-          <Link to="/" className="text-white hover:text-paper-100 transition-colors">Home</Link>
-          <Link to="/manifesto" className="text-white hover:text-paper-100 transition-colors">Manifesto</Link>
-          <Link to="/communities" className="text-white hover:text-paper-100 transition-colors">Communities</Link>
-          <Link to="/projects" className="text-white hover:text-paper-100 transition-colors">Projects</Link>
-          <Link to="/learning" className="text-white hover:text-paper-100 transition-colors">Learning</Link>
-          <Link to="/imagining" className="text-white hover:text-paper-100 transition-colors">Imagining</Link>
-          <Link to="/organizing" className="text-white hover:text-paper-100 transition-colors">Organizing</Link>
-          <Link to="/plugs" className="text-white hover:text-paper-100 transition-colors">Plugs</Link>
+          <Link to="/" className={linkClass}>Home</Link>
+          {isDisabled ? (
+            <>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Manifesto</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Communities</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Projects</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Learning</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Imagining</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Organizing</a>
+              <a href="#" onClick={handleDisabledClick} className={linkClass}>Plugs</a>
+            </>
+          ) : (
+            <>
+              <Link to="/manifesto" className={linkClass}>Manifesto</Link>
+              <Link to="/communities" className={linkClass}>Communities</Link>
+              <Link to="/projects" className={linkClass}>Projects</Link>
+              <Link to="/learning" className={linkClass}>Learning</Link>
+              <Link to="/imagining" className={linkClass}>Imagining</Link>
+              <Link to="/organizing" className={linkClass}>Organizing</Link>
+              <Link to="/plugs" className={linkClass}>Plugs</Link>
+            </>
+          )}
         </nav>
       </div>
     </header>

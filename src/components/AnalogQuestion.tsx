@@ -3,8 +3,13 @@ import { useState } from 'react';
 import { addManifestoEntry } from '../lib/store';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../hooks/use-toast';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 
-const AnalogQuestion = () => {
+type AnalogQuestionProps = {
+  onContributionSubmitted?: () => void;
+};
+
+const AnalogQuestion = ({ onContributionSubmitted }: AnalogQuestionProps) => {
   const [response, setResponse] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -24,6 +29,11 @@ const AnalogQuestion = () => {
         title: "Thank you for your contribution",
         description: "Your response has been added to our manifesto.",
       });
+      
+      // Call the callback function if provided
+      if (onContributionSubmitted) {
+        onContributionSubmitted();
+      }
       
       // Navigate to manifesto page
       navigate('/manifesto');
