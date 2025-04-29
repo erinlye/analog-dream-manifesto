@@ -91,6 +91,16 @@ const ProjectCard = ({ project, onUpdate }: ProjectCardProps) => {
       </CardHeader>
 
       <CardContent>
+        {project.imageUrl && (
+          <div className="mb-4">
+            <img 
+              src={project.imageUrl} 
+              alt={project.title}
+              className="w-full h-auto max-h-80 object-cover rounded-md"
+            />
+          </div>
+        )}
+        
         <p className="mb-4">{project.description}</p>
         
         {showComments && project.comments.length > 0 && (

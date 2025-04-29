@@ -29,4 +29,5 @@ export interface Project {
   upvotes: number;
   downvotes: number;
   comments: ProjectComment[];
+  imageUrl?: string; // Optional image URL for the project
 }

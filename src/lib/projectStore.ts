@@ -11,6 +11,7 @@ const initialProjects: Project[] = [
     timestamp: Date.now() - 86400000 * 7, // 7 days ago
     upvotes: 24,
     downvotes: 2,
+    imageUrl: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=500&auto=format",
     comments: [
       {
         id: "c1",
@@ -34,6 +35,7 @@ const initialProjects: Project[] = [
     timestamp: Date.now() - 86400000 * 3, // 3 days ago
     upvotes: 18,
     downvotes: 0,
+    imageUrl: "https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?w=500&auto=format",
     comments: [
       {
         id: "c3",
