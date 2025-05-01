@@ -13,6 +13,7 @@ import Imagining from "./pages/Imagining";
 import Organizing from "./pages/Organizing";
 import Plugs from "./pages/Plugs";
 import Norms from "./pages/Norms";
+import CommunityDetail from "./pages/CommunityDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/manifesto" element={<Manifesto />} />
           <Route path="/communities" element={<Communities />} />
+          <Route path="/communities/:slug" element={<CommunityDetail />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/learning" element={<Learning />} />
           <Route path="/imagining" element={<Imagining />} />

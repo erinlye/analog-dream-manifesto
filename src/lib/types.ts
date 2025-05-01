@@ -13,6 +13,33 @@ export interface Community {
   slug: string;
 }
 
+export interface CommunityMember {
+  id: string;
+  communityId: string;
+  username: string;
+  joinedAt: number;
+}
+
+export interface CommunityPost {
+  id: string;
+  communityId: string;
+  title: string;
+  description: string;
+  author: string;
+  timestamp: number;
+  upvotes: number;
+  downvotes: number;
+  comments: CommunityComment[];
+  imageUrl?: string;
+}
+
+export interface CommunityComment {
+  id: string;
+  author: string;
+  content: string;
+  timestamp: number;
+}
+
 export interface ProjectComment {
   id: string;
   author: string;
