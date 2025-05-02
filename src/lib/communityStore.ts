@@ -42,7 +42,7 @@ const initialCommunityPosts: Record<string, CommunityPost[]> = {
         {
           id: 'c1',
           author: 'digital_detox',
-          content: 'How's the texting experience? I heard it can be a bit slow.',
+          content: 'How\'s the texting experience? I heard it can be a bit slow.',
           timestamp: Date.now() - 86400000 * 4
         }
       ],
@@ -54,7 +54,7 @@ const initialCommunityPosts: Record<string, CommunityPost[]> = {
       id: '2',
       communityId: '2',
       title: 'Nokia 3310 in 2025',
-      description: 'Still using my Nokia 3310 in 2025. Battery lasts a week and it's indestructible!',
+      description: 'Still using my Nokia 3310 in 2025. Battery lasts a week and it\'s indestructible!',
       author: 'retro_gadgets',
       timestamp: Date.now() - 86400000 * 3,
       upvotes: 24,
