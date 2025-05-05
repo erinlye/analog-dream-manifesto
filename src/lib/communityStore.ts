@@ -6,22 +6,22 @@ const initialCommunities: Community[] = [
   {
     id: '1',
     name: 'Light Phone Users',
-    description: 'For users of the minimalist Light Phone who want to reduce screen time without sacrificing connectivity.',
-    memberCount: 245,
+    description: 'For users of the Light Phone, designed to be used as little as possible.',
+    memberCount: 0,
     slug: 'light-phone'
   },
   {
     id: '2',
     name: 'Brick Phone Enthusiasts',
-    description: 'Embracing the durability and simplicity of brick phones in a smartphone-dominated world.',
-    memberCount: 189,
+    description: 'Brick is a physical device that temporarily removes distracting apps and their notifications from your phone.',
+    memberCount: 0,
     slug: 'brick-phone'
   },
   {
     id: '3',
     name: 'Flip Phone Users',
-    description: 'The satisfying snap of closing your phone after a call - join fellow flip phone enthusiasts.',
-    memberCount: 216,
+    description: 'Not everyone needs a smartphone.',
+    memberCount: 0,
     slug: 'flip-phone'
   }
 ];
