@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import { getAllPlugPosts, getPlugPostsByPopularity, addPlugComment, togglePlugUpvote, togglePlugDownvote, addPlugPost } from '../lib/plugsStore';
+import { getAllPlugPosts, getPlugPostsByPopularity, addPlugComment, togglePlugUpvote, togglePlugDownvote, addPlugPost, deletePlugPost } from '../lib/plugsStore';
 import { PlugPost } from '../lib/types';
 import ForumCard from '../components/ForumCard';
 import NewForumPostForm from '../components/NewForumPostForm';
+import ModeratorLogin from '../components/ModeratorLogin';
 import { Button } from '../components/ui/button';
 
 const Plugs = () => {
@@ -50,6 +51,7 @@ const Plugs = () => {
                 >
                   Popular
                 </Button>
+                <ModeratorLogin />
               </div>
             </div>
           </header>
@@ -69,7 +71,9 @@ const Plugs = () => {
                   onUpvote={togglePlugUpvote} 
                   onDownvote={togglePlugDownvote}
                   onAddComment={addPlugComment}
-                  onUpdate={loadPosts} 
+                  onDelete={deletePlugPost}
+                  onUpdate={loadPosts}
+                  resourceType="plugPost"
                 />
               ))
             ) : (

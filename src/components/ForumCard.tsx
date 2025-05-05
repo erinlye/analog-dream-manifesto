@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import ModeratorControls from './ModeratorControls';
 
 interface Comment {
   id: string;
@@ -32,10 +33,22 @@ interface ForumCardProps {
   onUpvote: (postId: string) => void;
   onDownvote: (postId: string) => void;
   onAddComment: (postId: string, comment: { author: string; content: string }) => void;
+  onDelete: (postId: string) => void;
   onUpdate: () => void;
+  resourceType: 'communityPost' | 'learningPost' | 'imaginingPost' | 'organizingPost' | 'plugPost';
+  communitySlug?: string;
 }
 
-const ForumCard = ({ post, onUpvote, onDownvote, onAddComment, onUpdate }: ForumCardProps) => {
+const ForumCard = ({ 
+  post, 
+  onUpvote, 
+  onDownvote, 
+  onAddComment, 
+  onDelete,
+  onUpdate, 
+  resourceType,
+  communitySlug 
+}: ForumCardProps) => {
   const [isCommenting, setIsCommenting] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [showComments, setShowComments] = useState(false);
@@ -77,8 +90,24 @@ const ForumCard = ({ post, onUpvote, onDownvote, onAddComment, onUpdate }: Forum
     });
   };
 
+  const handleDelete = () => {
+    onDelete(post.id);
+    onUpdate();
+    toast({
+      title: "Post deleted",
+      description: "The post has been deleted"
+    });
+  };
+
   return (
-    <Card className="mb-6 hover:shadow-lg transition-shadow">
+    <Card className="mb-6 hover:shadow-lg transition-shadow relative">
+      <ModeratorControls 
+        resourceId={post.id} 
+        resourceType={resourceType} 
+        communitySlug={communitySlug}
+        onDelete={handleDelete}
+      />
+      
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>

@@ -1,4 +1,3 @@
-
 import { OrganizingPost, OrganizingComment } from "./types";
 
 // Sample initial organizing posts
@@ -73,6 +72,13 @@ export const addOrganizingPost = (post: Omit<OrganizingPost, 'id' | 'upvotes' | 
   };
   organizingPosts = [newPost, ...organizingPosts];
   return newPost;
+};
+
+// Delete an organizing post
+export const deleteOrganizingPost = (postId: string): boolean => {
+  const initialLength = organizingPosts.length;
+  organizingPosts = organizingPosts.filter(p => p.id !== postId);
+  return organizingPosts.length < initialLength;
 };
 
 // Add a comment to an organizing post

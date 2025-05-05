@@ -85,6 +85,13 @@ export const addProject = (project: Omit<Project, 'id' | 'upvotes' | 'downvotes'
   return newProject;
 };
 
+// Delete a project
+export const deleteProject = (projectId: string): boolean => {
+  const initialLength = projects.length;
+  projects = projects.filter(p => p.id !== projectId);
+  return projects.length < initialLength;
+};
+
 // Add a comment to a project
 export const addComment = (projectId: string, comment: Omit<ProjectComment, 'id' | 'timestamp'>): ProjectComment | null => {
   const projectIndex = projects.findIndex(p => p.id === projectId);

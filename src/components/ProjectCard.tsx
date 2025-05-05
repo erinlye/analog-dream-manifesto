@@ -2,13 +2,14 @@
 import { useState } from 'react';
 import { Project } from '../lib/types';
 import { format } from 'date-fns';
-import { addComment, toggleUpvote, toggleDownvote } from '../lib/projectStore';
+import { addComment, toggleUpvote, toggleDownvote, deleteProject } from '../lib/projectStore';
 import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import ModeratorControls from './ModeratorControls';
 
 interface ProjectCardProps {
   project: Project;
@@ -57,8 +58,23 @@ const ProjectCard = ({ project, onUpdate }: ProjectCardProps) => {
     });
   };
 
+  const handleDelete = () => {
+    deleteProject(project.id);
+    onUpdate();
+    toast({
+      title: "Project deleted",
+      description: "The project has been deleted"
+    });
+  };
+
   return (
-    <Card className="mb-6 hover:shadow-lg transition-shadow">
+    <Card className="mb-6 hover:shadow-lg transition-shadow relative">
+      <ModeratorControls 
+        resourceId={project.id} 
+        resourceType="project" 
+        onDelete={handleDelete}
+      />
+      
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>

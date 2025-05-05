@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import { getAllOrganizingPosts, getOrganizingPostsByPopularity, addOrganizingComment, toggleOrganizingUpvote, toggleOrganizingDownvote, addOrganizingPost } from '../lib/organizingStore';
+import { getAllOrganizingPosts, getOrganizingPostsByPopularity, addOrganizingComment, toggleOrganizingUpvote, toggleOrganizingDownvote, addOrganizingPost, deleteOrganizingPost } from '../lib/organizingStore';
 import { OrganizingPost } from '../lib/types';
 import ForumCard from '../components/ForumCard';
 import NewForumPostForm from '../components/NewForumPostForm';
+import ModeratorLogin from '../components/ModeratorLogin';
 import { Button } from '../components/ui/button';
 
 const Organizing = () => {
@@ -50,6 +51,7 @@ const Organizing = () => {
                 >
                   Popular
                 </Button>
+                <ModeratorLogin />
               </div>
             </div>
           </header>
@@ -69,7 +71,9 @@ const Organizing = () => {
                   onUpvote={toggleOrganizingUpvote} 
                   onDownvote={toggleOrganizingDownvote}
                   onAddComment={addOrganizingComment}
-                  onUpdate={loadPosts} 
+                  onDelete={deleteOrganizingPost}
+                  onUpdate={loadPosts}
+                  resourceType="organizingPost"
                 />
               ))
             ) : (

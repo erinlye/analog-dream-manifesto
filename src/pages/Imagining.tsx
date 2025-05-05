@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import { getAllImaginingPosts, getImaginingPostsByPopularity, addImaginingComment, toggleImaginingUpvote, toggleImaginingDownvote, addImaginingPost } from '../lib/imaginingStore';
+import { getAllImaginingPosts, getImaginingPostsByPopularity, addImaginingComment, toggleImaginingUpvote, toggleImaginingDownvote, addImaginingPost, deleteImaginingPost } from '../lib/imaginingStore';
 import { ImaginingPost } from '../lib/types';
 import ForumCard from '../components/ForumCard';
 import NewForumPostForm from '../components/NewForumPostForm';
+import ModeratorLogin from '../components/ModeratorLogin';
 import { Button } from '../components/ui/button';
 
 const Imagining = () => {
@@ -50,6 +51,7 @@ const Imagining = () => {
                 >
                   Popular
                 </Button>
+                <ModeratorLogin />
               </div>
             </div>
           </header>
@@ -69,7 +71,9 @@ const Imagining = () => {
                   onUpvote={toggleImaginingUpvote} 
                   onDownvote={toggleImaginingDownvote}
                   onAddComment={addImaginingComment}
-                  onUpdate={loadPosts} 
+                  onDelete={deleteImaginingPost}
+                  onUpdate={loadPosts}
+                  resourceType="imaginingPost"
                 />
               ))
             ) : (

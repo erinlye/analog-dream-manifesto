@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import { getAllLearningPosts, getLearningPostsByPopularity, addLearningComment, toggleLearningUpvote, toggleLearningDownvote, addLearningPost } from '../lib/learningStore';
+import { getAllLearningPosts, getLearningPostsByPopularity, addLearningComment, toggleLearningUpvote, toggleLearningDownvote, addLearningPost, deleteLearningPost } from '../lib/learningStore';
 import { LearningPost } from '../lib/types';
 import ForumCard from '../components/ForumCard';
 import NewForumPostForm from '../components/NewForumPostForm';
+import ModeratorLogin from '../components/ModeratorLogin';
 import { Button } from '../components/ui/button';
 
 const Learning = () => {
@@ -50,6 +51,7 @@ const Learning = () => {
                 >
                   Popular
                 </Button>
+                <ModeratorLogin />
               </div>
             </div>
           </header>
@@ -69,7 +71,9 @@ const Learning = () => {
                   onUpvote={toggleLearningUpvote} 
                   onDownvote={toggleLearningDownvote}
                   onAddComment={addLearningComment}
-                  onUpdate={loadPosts} 
+                  onDelete={deleteLearningPost}
+                  onUpdate={loadPosts}
+                  resourceType="learningPost"
                 />
               ))
             ) : (

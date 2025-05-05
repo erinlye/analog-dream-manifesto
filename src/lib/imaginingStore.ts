@@ -1,4 +1,3 @@
-
 import { ImaginingPost, ImaginingComment } from "./types";
 
 // Sample initial imagining posts
@@ -73,6 +72,13 @@ export const addImaginingPost = (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'd
   };
   imaginingPosts = [newPost, ...imaginingPosts];
   return newPost;
+};
+
+// Delete an imagining post
+export const deleteImaginingPost = (postId: string): boolean => {
+  const initialLength = imaginingPosts.length;
+  imaginingPosts = imaginingPosts.filter(p => p.id !== postId);
+  return imaginingPosts.length < initialLength;
 };
 
 // Add a comment to an imagining post

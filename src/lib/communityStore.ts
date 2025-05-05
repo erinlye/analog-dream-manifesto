@@ -1,4 +1,3 @@
-
 import { Community, CommunityPost, CommunityComment, CommunityMember } from './types';
 
 // Initial communities data
@@ -150,6 +149,24 @@ export const addCommunityPost = (slug: string, post: Omit<CommunityPost, 'id' | 
   localStorage.setItem(`analog-community-posts-${slug}`, JSON.stringify(updatedPosts));
   
   return newPost;
+};
+
+// Delete a community post
+export const deleteCommunityPost = (slug: string, postId: string): boolean => {
+  try {
+    const posts = getCommunityPosts(slug);
+    const filteredPosts = posts.filter(p => p.id !== postId);
+    
+    if (filteredPosts.length === posts.length) {
+      return false; // No post was removed
+    }
+    
+    localStorage.setItem(`analog-community-posts-${slug}`, JSON.stringify(filteredPosts));
+    return true;
+  } catch (error) {
+    console.error(`Error deleting post from community ${slug}:`, error);
+    return false;
+  }
 };
 
 // Add a comment to a community post

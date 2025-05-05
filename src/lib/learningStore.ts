@@ -1,4 +1,3 @@
-
 import { LearningPost, LearningComment } from "./types";
 
 // Sample initial learning posts
@@ -73,6 +72,13 @@ export const addLearningPost = (post: Omit<LearningPost, 'id' | 'upvotes' | 'dow
   };
   learningPosts = [newPost, ...learningPosts];
   return newPost;
+};
+
+// Delete a learning post
+export const deleteLearningPost = (postId: string): boolean => {
+  const initialLength = learningPosts.length;
+  learningPosts = learningPosts.filter(p => p.id !== postId);
+  return learningPosts.length < initialLength;
 };
 
 // Add a comment to a learning post

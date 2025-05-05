@@ -1,4 +1,3 @@
-
 import { PlugPost, PlugComment } from "./types";
 
 // Sample initial plug posts
@@ -73,6 +72,13 @@ export const addPlugPost = (post: Omit<PlugPost, 'id' | 'upvotes' | 'downvotes' 
   };
   plugPosts = [newPost, ...plugPosts];
   return newPost;
+};
+
+// Delete a plug post
+export const deletePlugPost = (postId: string): boolean => {
+  const initialLength = plugPosts.length;
+  plugPosts = plugPosts.filter(p => p.id !== postId);
+  return plugPosts.length < initialLength;
 };
 
 // Add a comment to a plug post

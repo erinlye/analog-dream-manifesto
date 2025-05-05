@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
-import { getAllProjects, getProjectsByPopularity } from '../lib/projectStore';
+import { getAllProjects, getProjectsByPopularity, deleteProject } from '../lib/projectStore';
 import { Project } from '../lib/types';
 import ProjectCard from '../components/ProjectCard';
 import NewProjectForm from '../components/NewProjectForm';
+import ModeratorLogin from '../components/ModeratorLogin';
 import { Button } from '../components/ui/button';
 
 const Projects = () => {
@@ -50,6 +51,7 @@ const Projects = () => {
                 >
                   Popular
                 </Button>
+                <ModeratorLogin />
               </div>
             </div>
           </header>
