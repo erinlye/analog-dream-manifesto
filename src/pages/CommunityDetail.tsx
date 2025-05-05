@@ -128,25 +128,29 @@ const CommunityDetail = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-1">
-        <div className="analog-container">
+      <main className="flex-1 py-6">
+        <div className="retro-container max-w-4xl mx-auto px-4 py-6 bg-white border-2 border-[#88CDDC] rounded-lg shadow-retro-lg">
           <header className="mb-8 mt-6">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-3xl md:text-4xl font-serif mb-2">{community.name}</h1>
-                <p className="text-ink-400 mb-1">
+                <h1 className="text-3xl md:text-4xl font-comic text-[#3080C0] mb-2 bg-[#E8FFFF] px-4 py-2 inline-block border-2 border-[#88CDDC] rounded-lg shadow-retro">
+                  {community.name}
+                </h1>
+                <p className="text-[#555] mb-1 font-comic">
                   {community.description}
                 </p>
-                <div className="flex items-center text-sm text-ink-300">
+                <div className="flex items-center text-sm text-[#666] font-comic">
                   <Users className="h-4 w-4 mr-1" />
-                  {community.memberCount} members
+                  <span className="counter-badge">
+                    {community.memberCount} members
+                  </span>
                 </div>
               </div>
               <div className="flex space-x-2">
                 <Button 
                   onClick={handleJoinCommunity}
                   variant={isMember ? "outline" : "default"}
-                  className="flex items-center"
+                  className="flex items-center retro-button font-comic text-sm border border-[#246090]"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
                   {isMember ? "Leave Community" : "Join Community"}
@@ -161,6 +165,7 @@ const CommunityDetail = () => {
                   variant={sortBy === 'recent' ? 'default' : 'outline'}
                   onClick={() => setSortBy('recent')}
                   size="sm"
+                  className={`font-comic retro-button ${sortBy === 'recent' ? 'bg-[#3080C0]' : 'bg-white text-[#3080C0] border border-[#3080C0]'}`}
                 >
                   Recent
                 </Button>
@@ -168,6 +173,7 @@ const CommunityDetail = () => {
                   variant={sortBy === 'popular' ? 'default' : 'outline'}
                   onClick={() => setSortBy('popular')}
                   size="sm"
+                  className={`font-comic retro-button ${sortBy === 'popular' ? 'bg-[#3080C0]' : 'bg-white text-[#3080C0] border border-[#3080C0]'}`}
                 >
                   Popular
                 </Button>
@@ -175,11 +181,13 @@ const CommunityDetail = () => {
             </div>
           </header>
           
-          <NewForumPostForm 
-            onPostAdded={loadPosts} 
-            sectionName={community.name} 
-            addPost={handleAddPost} 
-          />
+          <div className="speech-bubble mb-8">
+            <NewForumPostForm 
+              onPostAdded={loadPosts} 
+              sectionName={community.name} 
+              addPost={handleAddPost} 
+            />
+          </div>
           
           <div className="space-y-6">
             {posts.length > 0 ? (
@@ -197,17 +205,27 @@ const CommunityDetail = () => {
                 />
               ))
             ) : (
-              <div className="analog-paper text-center py-10">
-                <h2 className="text-xl font-serif mb-4">No Posts Yet</h2>
-                <p>Be the first to share with the {community.name} community!</p>
+              <div className="analog-paper text-center py-10 bg-[#FFFF99] border-2 border-[#FFCC00] font-comic">
+                <h2 className="text-xl font-comic mb-4 text-[#CC6600]">No Posts Yet</h2>
+                <p className="text-[#CC6600]">Be the first to share with the {community.name} community!</p>
+                <div className="mt-4">
+                  <span className="blink text-[#FF0000] font-bold text-xl inline-block">!</span>
+                </div>
               </div>
             )}
           </div>
         </div>
       </main>
-      <footer className="border-t border-paper-300/40 py-8 mt-16">
-        <div className="analog-container text-center text-ink-400 text-sm">
-          <p>© {new Date().getFullYear()} Analog Community • <a href="#" className="analog-link">Contact</a></p>
+      <footer className="border-t-2 border-[#88CDDC] py-8 mt-16 bg-white">
+        <div className="retro-container text-center text-[#666] text-sm font-comic">
+          <p>© {new Date().getFullYear()} Analog Community • <a href="#" className="retro-link">Contact</a> • <a href="#" className="retro-link">About</a> • <a href="#" className="retro-link">Help</a></p>
+          <p className="text-xs mt-2 text-[#999]">
+            Best viewed in Internet Explorer 6.0 or Netscape Navigator 4.0 at 800x600 resolution
+          </p>
+          <div className="flex justify-center gap-2 mt-2">
+            <img src="data:image/gif;base64,R0lGODlhFgASALMAAAAAAP///4iIiHZ2dgAAAPj4+P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAEALAAAAAAWABIAQARGEMhJq7046827/2AojmRpnmiqrqyqIEAsz3Rt33iu73zv/0DfIDEQCBaFAcB45DiWg+fpYPpIm9Wot1ErLu/IuSM3DAgBADs=" alt="Best viewed in IE" width="22" height="18" className="pixelated" />
+            <img src="data:image/gif;base64,R0lGODlhEgASALMAAAAAAP///93d3bu7u5mZmf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAEALAAAAAASABIAQAROMHFJq704X+y9KFVgKAkfFpxoqhaaKw1bMMxrds04Xt+4aOv7YT6EkCgSGAaOw6RyJkQ4kQSpdFpYJbLVinW4uGgHiUtmG0l6vx9JAgA7" alt="Get Netscape Now" width="18" height="18" className="pixelated" />
+          </div>
         </div>
       </footer>
     </div>

@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +40,148 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Retro Web Styles */
+.retro-container {
+  background-color: white;
+  border: 2px solid #88CDDC;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.retro-button {
+  background: linear-gradient(to bottom, #6CADDE, #3080C0);
+  color: white;
+  border: 2px solid #3080C0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-weight: bold;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.retro-button:hover {
+  background: linear-gradient(to bottom, #3080C0, #1060A0);
+}
+
+.retro-text-input {
+  border: 2px solid #6CADDE;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.retro-marquee {
+  background-color: #FFFF99;
+  border: 2px solid #FFCC00;
+  padding: 5px;
+  color: #CC6600;
+  font-weight: bold;
+}
+
+.retro-table {
+  border-collapse: collapse;
+  border: 2px solid #88CDDC;
+}
+
+.retro-table th {
+  background-color: #D1F7A0;
+  border: 1px solid #88CDDC;
+  padding: 5px;
+}
+
+.retro-table td {
+  background-color: white;
+  border: 1px solid #88CDDC;
+  padding: 5px;
+}
+
+.blink {
+  animation: blink-animation 1s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+
+.retro-link {
+  color: #0066CC;
+  text-decoration: underline;
+}
+
+.retro-link:hover {
+  color: #CC0000;
+}
+
+.retro-header {
+  background: linear-gradient(to right, #6CADDE, #3080C0);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.retro-footer {
+  border-top: 1px solid #CCCCCC;
+  margin-top: 20px;
+  padding-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #666666;
+}
+
+.counter-badge {
+  background-color: #FFCC00;
+  border: 1px solid #CC9900;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: #996600;
+  font-weight: bold;
+}
+
+.browser-frame {
+  border: 3px solid #999999;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.browser-top {
+  background: linear-gradient(to bottom, #CCCCCC, #999999);
+  padding: 5px;
+  border-radius: 5px 5px 0 0;
+}
+
+.browser-content {
+  background-color: white;
+  padding: 10px;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+}
+
+.retro-navigation {
+  background: linear-gradient(to bottom, #6CADDE, #3080C0);
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.retro-navigation a {
+  color: white;
+  text-decoration: none;
+  padding: 3px 8px;
+  margin: 0 5px;
+  border-radius: 3px;
+}
+
+.retro-navigation a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }

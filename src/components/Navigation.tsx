@@ -16,13 +16,13 @@ const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) =>
 
   const linkClass = isDisabled 
     ? "text-white/60 cursor-not-allowed transition-colors" 
-    : "text-white hover:text-paper-100 transition-colors";
+    : "text-white hover:text-yellow-200 transition-colors";
 
   return (
-    <header className="bg-gradient-to-r from-[#6699CC] to-[#336699] shadow-lg">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <header className="bg-[#6CADDE] shadow-retro-lg border-b-2 border-[#3080C0]">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div className="flex items-center justify-between">
-          <Link to="/" className="font-serif text-2xl text-white hover:text-paper-100">
+          <Link to="/" className="font-comic text-4xl text-white drop-shadow-[2px_2px_0_rgba(0,0,0,0.3)] hover:text-yellow-200">
             analog
           </Link>
           <button className="md:hidden text-white">
@@ -30,8 +30,8 @@ const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) =>
           </button>
         </div>
         
-        <nav className="md:flex items-center gap-6 hidden">
-          <Link to="/" className={linkClass}>Home</Link>
+        <nav className="md:flex items-center gap-4 hidden">
+          <Link to="/" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Home</Link>
           {isDisabled ? (
             <>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>Manifesto</a>
@@ -45,14 +45,14 @@ const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) =>
             </>
           ) : (
             <>
-              <Link to="/manifesto" className={linkClass}>Manifesto</Link>
-              <Link to="/communities" className={linkClass}>Communities</Link>
-              <Link to="/projects" className={linkClass}>Projects</Link>
-              <Link to="/learning" className={linkClass}>Learning</Link>
-              <Link to="/imagining" className={linkClass}>Imagining</Link>
-              <Link to="/organizing" className={linkClass}>Organizing</Link>
-              <Link to="/plugs" className={linkClass}>Plugs</Link>
-              <Link to="/norms" className={linkClass}>Norms</Link>
+              <Link to="/manifesto" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Manifesto</Link>
+              <Link to="/communities" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Communities</Link>
+              <Link to="/projects" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Projects</Link>
+              <Link to="/learning" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Learning</Link>
+              <Link to="/imagining" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Imagining</Link>
+              <Link to="/organizing" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Organizing</Link>
+              <Link to="/plugs" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Plugs</Link>
+              <Link to="/norms" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>Norms</Link>
             </>
           )}
         </nav>
