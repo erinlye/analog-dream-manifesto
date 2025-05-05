@@ -13,13 +13,15 @@ import {
   toggleCommunityDownvote,
   isUserMemberOfCommunity,
   joinCommunity,
-  leaveCommunity
+  leaveCommunity,
+  deleteCommunityPost
 } from '../lib/communityStore';
 import { Community, CommunityPost } from '../lib/types';
 import ForumCard from '../components/ForumCard';
 import NewForumPostForm from '../components/NewForumPostForm';
 import { Button } from '../components/ui/button';
 import { UserPlus, Users } from 'lucide-react';
+import ModeratorLogin from '../components/ModeratorLogin';
 
 const CommunityDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -108,6 +110,17 @@ const CommunityDetail = () => {
     loadPosts();
   };
 
+  const handleDeletePost = (postId: string) => {
+    if (!slug) return;
+    if (deleteCommunityPost(slug, postId)) {
+      toast({
+        title: "Post deleted",
+        description: "The post has been successfully deleted"
+      });
+      loadPosts();
+    }
+  };
+
   if (!community) {
     return null;
   }
@@ -129,14 +142,17 @@ const CommunityDetail = () => {
                   {community.memberCount} members
                 </div>
               </div>
-              <Button 
-                onClick={handleJoinCommunity}
-                variant={isMember ? "outline" : "default"}
-                className="flex items-center"
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                {isMember ? "Leave Community" : "Join Community"}
-              </Button>
+              <div className="flex space-x-2">
+                <Button 
+                  onClick={handleJoinCommunity}
+                  variant={isMember ? "outline" : "default"}
+                  className="flex items-center"
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  {isMember ? "Leave Community" : "Join Community"}
+                </Button>
+                <ModeratorLogin />
+              </div>
             </div>
             
             <div className="flex justify-between items-center mt-6 mb-4">
@@ -174,7 +190,10 @@ const CommunityDetail = () => {
                   onUpvote={handleUpvote} 
                   onDownvote={handleDownvote}
                   onAddComment={handleAddComment}
-                  onUpdate={loadPosts} 
+                  onDelete={handleDeletePost}
+                  onUpdate={loadPosts}
+                  resourceType="communityPost"
+                  communitySlug={slug}
                 />
               ))
             ) : (
