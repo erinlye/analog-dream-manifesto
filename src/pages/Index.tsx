@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import AnalogQuestion from '../components/AnalogQuestion';
@@ -5,6 +6,7 @@ import PseudonymGenerator from '../components/PseudonymGenerator';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getManifestoEntries } from '../lib/store';
+import ManifestoEntries from '../components/ManifestoEntries';
 
 const Index = () => {
   const [hasContributed, setHasContributed] = useState(false);
@@ -39,6 +41,11 @@ const Index = () => {
             <p className="text-lg md:text-xl text-ink-400 max-w-2xl mx-auto">
               we're building a platform to promote and communally learn how to live more analog lifestyles in our increasingly digital world.
             </p>
+          </div>
+          
+          <div className="mb-12">
+            <h2 className="font-serif text-2xl mb-6 text-center">Our Manifesto</h2>
+            <ManifestoEntries />
           </div>
           
           <PseudonymGenerator />
