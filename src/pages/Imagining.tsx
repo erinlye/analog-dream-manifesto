@@ -87,7 +87,7 @@ const Imagining = () => {
       </main>
       <footer className="border-t border-paper-300/40 py-8 mt-16">
         <div className="analog-container text-center text-ink-400 text-sm">
-          <p>© {new Date().getFullYear()} Analog Community • <a href="#" className="analog-link">Contact</a></p>
+          <p>© {new Date().getFullYear()} Analog Community</p>
         </div>
       </footer>
     </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import AnalogQuestion from '../components/AnalogQuestion';
@@ -104,7 +103,7 @@ const Index = () => {
 
       <footer className="border-t border-paper-300/40 py-8">
         <div className="analog-container text-center text-ink-400 text-sm">
-          <p>© {new Date().getFullYear()} Analog Community • <a href="#" className="analog-link">Contact</a></p>
+          <p>© {new Date().getFullYear()} Analog Community</p>
         </div>
       </footer>
     </div>
