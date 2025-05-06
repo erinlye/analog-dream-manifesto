@@ -100,7 +100,7 @@ export default {
       },
       fontFamily: {
         'comic': ['Comic Sans MS', 'Comic Sans', 'cursive'],
-        'serif': ['Times New Roman', 'Times', 'serif'],
+        'serif': ['Arial', 'Helvetica', 'sans-serif'], // Changed from Times New Roman to Arial
         'sans': ['Arial', 'Helvetica', 'sans-serif'],
         'mono': ['Courier New', 'monospace'],
       },

@@ -21,7 +21,7 @@ const Communities = () => {
       <main className="flex-1">
         <div className="analog-container">
           <header className="mb-10 mt-6">
-            <h1 className="text-3xl md:text-4xl font-serif mb-4">Communities</h1>
+            <h1 className="text-3xl md:text-4xl font-sans mb-4">Communities</h1>
             <p className="text-ink-400">
               Find your people and join the conversation.
             </p>
@@ -32,7 +32,7 @@ const Communities = () => {
               <CommunityCard key={community.id} community={community} />
             ))}
             <div className="analog-paper border-dashed flex flex-col items-center justify-center text-center p-8">
-              <h3 className="font-serif text-xl mb-2">Start a Community</h3>
+              <h3 className="font-sans text-xl mb-2">Start a Community</h3>
               <p className="text-ink-400 mb-4">Don't see your analog interest represented?</p>
               <button className="analog-button mt-2">Create New</button>
             </div>

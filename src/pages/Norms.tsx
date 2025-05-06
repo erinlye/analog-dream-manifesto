@@ -9,7 +9,7 @@ const Norms = () => {
       <main className="flex-1">
         <div className="analog-container">
           <header className="mb-10 mt-6">
-            <h1 className="text-3xl md:text-4xl font-serif mb-4">Community Norms</h1>
+            <h1 className="text-3xl md:text-4xl font-sans mb-4">Community Norms</h1>
             <p className="text-ink-400">
               Guidelines for participation in the analog community.
             </p>

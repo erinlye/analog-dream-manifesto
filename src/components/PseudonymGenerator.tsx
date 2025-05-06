@@ -13,7 +13,9 @@ const PseudonymGenerator = () => {
   return (
     <div className="analog-paper text-center p-4 mb-8 max-w-lg mx-auto">
       <p className="text-lg mb-2">welcome, analog dreamer:</p>
-      <p className="font-bold text-2xl mb-2 text-accent-400">{pseudonym}</p>
+      <p className="font-bold text-2xl mb-2 text-[#D946EF]">
+        {pseudonym}
+      </p>
       <Button 
         onClick={handleGenerateNew}
         className="analog-button text-sm"
