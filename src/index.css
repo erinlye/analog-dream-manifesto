@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -61,6 +60,12 @@
   
   input, textarea, select {
     @apply border-2 border-gray-300 rounded-md px-2 py-1;
+  }
+  
+  /* Make Arial font bold and italic by default */
+  .font-sans, .font-serif {
+    font-weight: 700;
+    font-style: italic;
   }
 }
 

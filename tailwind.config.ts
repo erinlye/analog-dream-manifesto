@@ -100,8 +100,14 @@ export default {
       },
       fontFamily: {
         'comic': ['Comic Sans MS', 'Comic Sans', 'cursive'],
-        'serif': ['Arial', 'Helvetica', 'sans-serif'], // Changed from Times New Roman to Arial
-        'sans': ['Arial', 'Helvetica', 'sans-serif'],
+        'serif': ['Arial', 'Helvetica', 'sans-serif'],
+        'sans': {
+          DEFAULT: ['Arial', 'Helvetica', 'sans-serif'],
+          css: {
+            fontWeight: '700',
+            fontStyle: 'italic',
+          },
+        },
         'mono': ['Courier New', 'monospace'],
       },
       borderRadius: {

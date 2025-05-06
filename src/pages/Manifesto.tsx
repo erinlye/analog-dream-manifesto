@@ -10,7 +10,7 @@ const Manifesto = () => {
         <div className="analog-container">
           <header className="mb-10 mt-6">
             <h1 className="text-3xl md:text-4xl font-sans mb-4">Manifesto of Analog Dreams</h1>
-            <p className="text-ink-400">
+            <p className="text-ink-400 font-sans">
               Our collective vision for a more intentional relationship with technology.
             </p>
           </header>
