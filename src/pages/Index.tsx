@@ -44,7 +44,7 @@ const Index = () => {
           </div>
           
           <div className="mb-12">
-            <h2 className="font-serif text-2xl mb-6 text-center">Our Manifesto</h2>
+            <h2 className="font-serif text-2xl mb-6 text-center">Our Manifesto: Reasons for Being Analog</h2>
             <ManifestoEntries />
           </div>
           
