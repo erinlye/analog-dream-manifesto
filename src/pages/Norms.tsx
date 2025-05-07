@@ -10,14 +10,26 @@ const Norms = () => {
         <div className="analog-container">
           <header className="mb-10 mt-6">
             <h1 className="text-3xl md:text-4xl font-sans mb-4">Community Norms</h1>
-            <p className="text-ink-400">
-              Support the diverse ways people are accessing analog living. 
-              Be creative and kind. 
-              Analog has zero tolerance for hate speech, hurtful language, sexual language or extortion, or any other online abuse. These accounts will be promptly removed from analog.
-              Living analog is living a political life against the tech industry. We don't shy away from these healthy political conversations, but they need to happen with respect. Debate ideas not people. Do not be political in a way that does not support or relate to analog living.
-              Do not post sexually explicit content on any forum site. 
-            </p>
           </header>
+          
+          <Card className="analog-paper mb-6">
+            <CardHeader>
+              <CardTitle className="text-2xl">Community Norms</CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm">
+              <p className="text-ink-400">
+                Support the diverse ways people are accessing analog living.
+                <br />
+                Be creative and kind.
+                <br />
+                Analog has zero tolerance for hate speech, hurtful language, sexual language or extortion, or any other online abuse. These accounts will be promptly removed from analog.
+                <br />
+                Living analog is living a political life against the tech industry. We don't shy away from these healthy political conversations, but they need to happen with respect. Debate ideas not people. Do not be political in a way that does not support or relate to analog living.
+                <br />
+                Do not post sexually explicit content on any forum site.
+              </p>
+            </CardContent>
+          </Card>
           
           <Card className="analog-paper">
             <CardHeader>
@@ -26,13 +38,20 @@ const Norms = () => {
             <CardContent className="prose prose-sm">
               <p className="italic text-ink-400">
                 We each moderate once a week:
+                <br />
                 Emma - Monday
+                <br />
                 Jenny - Wednesday
+                <br />
                 Emily - Friday
+                <br />
                 Erin - Saturday
+                <br />
                 When people make communities, they become the moderator of their communities.
+                <br />
                 They have to moderate the space at least once per week.
-                The general platform moderators will oversee the communities once per week and contact moderators if they see something concerning.  
+                <br />
+                The general platform moderators will oversee the communities once per week and contact moderators if they see something concerning.
               </p>
             </CardContent>
           </Card>
