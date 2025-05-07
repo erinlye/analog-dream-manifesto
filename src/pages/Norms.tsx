@@ -14,7 +14,7 @@ const Norms = () => {
           
           <Card className="analog-paper mb-6">
             <CardHeader>
-              <CardTitle className="text-2xl">community norms</CardTitle>
+              <CardTitle className="text-2xl font-serif">community norms</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm">
               <p className="text-ink-400">
@@ -33,7 +33,7 @@ const Norms = () => {
           
           <Card className="analog-paper mb-6">
             <CardHeader>
-              <CardTitle className="text-2xl">moderation policy</CardTitle>
+              <CardTitle className="text-2xl font-serif">moderation policy</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm">
               <p className="text-ink-400">
@@ -58,7 +58,7 @@ const Norms = () => {
           
           <Card className="analog-paper">
             <CardHeader>
-              <CardTitle className="text-2xl">community feedback</CardTitle>
+              <CardTitle className="text-2xl font-serif">community feedback</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm">
               <p className="text-ink-400">
