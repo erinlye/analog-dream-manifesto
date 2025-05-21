@@ -7,18 +7,21 @@ import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getManifestoEntries } from '../lib/store';
 import ManifestoEntries from '../components/ManifestoEntries';
+import AuthStatus from '../components/AuthStatus';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const [hasContributed, setHasContributed] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { user } = useAuth();
 
   // Check if the user has already contributed to the manifesto
   useEffect(() => {
     const entries = getManifestoEntries();
-    if (entries.length > 0) {
+    if (entries.length > 0 || user) {
       setHasContributed(true);
     }
-  }, []);
+  }, [user]);
 
   const handleContribution = () => {
     setHasContributed(true);
@@ -33,6 +36,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <div className="flex justify-end p-2 bg-transparent">
+        <AuthStatus />
+      </div>
       <Navigation isDisabled={!hasContributed} onDisabledClick={handleOpenDialog} />
       <main className="flex-1">
         <section className="analog-container py-16">

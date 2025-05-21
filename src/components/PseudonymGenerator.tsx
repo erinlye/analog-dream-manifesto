@@ -2,9 +2,13 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { generatePseudonym } from '../utils/pseudonymGenerator';
+import AuthModal from './AuthModal';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PseudonymGenerator = () => {
   const [pseudonym, setPseudonym] = useState(generatePseudonym());
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleGenerateNew = () => {
     setPseudonym(generatePseudonym());
@@ -16,12 +20,29 @@ const PseudonymGenerator = () => {
       <p className="font-extrabold italic text-2xl mb-2 text-[#D946EF]">
         {pseudonym}
       </p>
-      <Button 
-        onClick={handleGenerateNew}
-        className="analog-button text-sm"
-      >
-        generate new name
-      </Button>
+      <div className="flex flex-wrap justify-center gap-2">
+        <Button 
+          onClick={handleGenerateNew}
+          className="analog-button text-sm"
+        >
+          generate new name
+        </Button>
+        
+        {!user && (
+          <Button 
+            onClick={() => setIsAuthModalOpen(true)}
+            className="bg-gradient-to-b from-[#FFFF99] to-[#FFCC00] text-[#996600] border-2 border-[#FFCC00] font-bold text-sm shadow-md hover:from-[#FFCC00] hover:to-[#CC9900] px-4 py-2 rounded-lg"
+          >
+            join with this name
+          </Button>
+        )}
+      </div>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        pseudonym={pseudonym}
+      />
     </div>
   );
 };
