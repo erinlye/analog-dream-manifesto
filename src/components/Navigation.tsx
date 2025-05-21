@@ -1,5 +1,7 @@
+
 import { useAuth } from '@/contexts/AuthContext';
 import AuthStatus from './AuthStatus';
+import { Link } from 'react-router-dom';
 
 interface NavigationProps {
   isDisabled?: boolean;
