@@ -48,6 +48,7 @@ const NewCommunityForm = () => {
     }
 
     try {
+      // Insert into communities table
       const { data, error } = await supabase
         .from('communities')
         .insert([
@@ -69,8 +70,7 @@ const NewCommunityForm = () => {
         .insert([
           {
             community_id: data[0].id,
-            user_id: user.id,
-            joined_at: new Date().toISOString()
+            user_id: user.id
           }
         ]);
 

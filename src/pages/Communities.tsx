@@ -1,5 +1,4 @@
 
-import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Navigation from '../components/Navigation';
 import CommunityCard from '../components/CommunityCard';

@@ -1,5 +1,4 @@
 
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Navigation from '../components/Navigation';
@@ -61,8 +60,7 @@ const CommunityDetail = () => {
         .insert([
           {
             community_id: community.id,
-            user_id: user.id,
-            joined_at: new Date().toISOString()
+            user_id: user.id
           }
         ]);
       
@@ -71,7 +69,7 @@ const CommunityDetail = () => {
       // Update member count
       const { error: updateError } = await supabase
         .from('communities')
-        .update({ member_count: (community.memberCount || 0) + 1 })
+        .update({ member_count: (community.member_count || 0) + 1 })
         .eq('id', community.id);
       
       if (updateError) throw updateError;
@@ -110,7 +108,7 @@ const CommunityDetail = () => {
       // Update member count
       const { error: updateError } = await supabase
         .from('communities')
-        .update({ member_count: Math.max((community.memberCount || 0) - 1, 0) })
+        .update({ member_count: Math.max((community.member_count || 0) - 1, 0) })
         .eq('id', community.id);
       
       if (updateError) throw updateError;
@@ -182,7 +180,7 @@ const CommunityDetail = () => {
             </div>
             <p className="text-ink-400 mt-2">{community.description}</p>
             <div className="mt-4 text-sm text-ink-300">
-              {community.memberCount || 0} members
+              {community.member_count || 0} members
             </div>
           </div>
           

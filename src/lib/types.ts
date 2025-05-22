@@ -1,3 +1,4 @@
+
 export interface ManifestoEntry {
   id: string;
   content: string;
@@ -8,18 +9,17 @@ export interface Community {
   id: string;
   name: string;
   description: string;
-  memberCount: number;
   slug: string;
+  member_count: number;
   created_by?: string;
   created_at?: string;
-  member_count?: number;
 }
 
 export interface CommunityMember {
   id: string;
-  communityId: string;
-  username: string;
-  joinedAt: number;
+  community_id: string;
+  user_id: string;
+  joined_at: string;
 }
 
 export interface CommunityPost {
