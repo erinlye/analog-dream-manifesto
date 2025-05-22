@@ -9,6 +9,8 @@ import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import ModeratorControls from './ModeratorControls';
+import { Badge } from './ui/badge';
+import { isLoggedInAsModerator } from '../lib/moderatorStore';
 
 interface Comment {
   id: string;
@@ -100,6 +102,8 @@ const ForumCard = ({
     });
   };
 
+  const isModerator = post.author === 'admin' || post.author === 'moderator';
+
   return (
     <Card className="mb-6 hover:shadow-lg transition-shadow relative">
       <ModeratorControls 
@@ -107,6 +111,8 @@ const ForumCard = ({
         resourceType={resourceType} 
         communitySlug={communitySlug}
         onDelete={handleDelete}
+        authorUsername={post.author}
+        postTitle={post.title}
       />
       
       <CardHeader>
@@ -118,6 +124,11 @@ const ForumCard = ({
               <Link to={`/users/${post.author}`} className="hover:underline">
                 {post.author}
               </Link>{" "}
+              {isModerator && (
+                <Badge variant="secondary" className="ml-1">
+                  Mod
+                </Badge>
+              )}
               • {format(post.timestamp, 'MMM d, yyyy')}
             </CardDescription>
           </div>

@@ -3,16 +3,26 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction } from './ui/alert-dialog';
 import { isLoggedInAsModerator } from '../lib/moderatorStore';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ShieldCheck } from 'lucide-react';
+import { addModeratorDeletionNotification } from '../lib/userPostHistory';
 
 interface ModeratorControlsProps {
   resourceId: string;
   resourceType: 'project' | 'communityPost' | 'learningPost' | 'imaginingPost' | 'organizingPost' | 'plugPost';
   communitySlug?: string;
   onDelete: () => void;
+  authorUsername?: string;
+  postTitle?: string;
 }
 
-const ModeratorControls = ({ resourceId, resourceType, communitySlug, onDelete }: ModeratorControlsProps) => {
+const ModeratorControls = ({ 
+  resourceId, 
+  resourceType, 
+  communitySlug, 
+  onDelete,
+  authorUsername,
+  postTitle = 'this post'
+}: ModeratorControlsProps) => {
   const [open, setOpen] = useState(false);
   const isModeratorLoggedIn = isLoggedInAsModerator();
 
@@ -32,6 +42,11 @@ const ModeratorControls = ({ resourceId, resourceType, communitySlug, onDelete }
   };
 
   const handleConfirmDelete = () => {
+    // If we have the author's username, notify them about the deletion
+    if (authorUsername) {
+      addModeratorDeletionNotification(authorUsername, postTitle);
+    }
+    
     onDelete();
     setOpen(false);
   };
@@ -54,6 +69,7 @@ const ModeratorControls = ({ resourceId, resourceType, communitySlug, onDelete }
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the {getResourceName()} 
             and all its comments.
+            {authorUsername && <p className="mt-2">The author will be notified of this moderation action.</p>}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -10,6 +10,7 @@ import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import ModeratorControls from './ModeratorControls';
+import { Badge } from './ui/badge';
 
 interface ProjectCardProps {
   project: Project;
@@ -67,12 +68,16 @@ const ProjectCard = ({ project, onUpdate }: ProjectCardProps) => {
     });
   };
 
+  const isModerator = project.author === 'admin' || project.author === 'moderator';
+
   return (
     <Card className="mb-6 hover:shadow-lg transition-shadow relative">
       <ModeratorControls 
         resourceId={project.id} 
         resourceType="project" 
         onDelete={handleDelete}
+        authorUsername={project.author}
+        postTitle={project.title}
       />
       
       <CardHeader>
@@ -80,7 +85,11 @@ const ProjectCard = ({ project, onUpdate }: ProjectCardProps) => {
           <div>
             <CardTitle className="text-2xl mb-2">{project.title}</CardTitle>
             <CardDescription className="text-sm mb-2">
-              Posted by {project.author} • {format(project.timestamp, 'MMM d, yyyy')}
+              Posted by {project.author} {isModerator && (
+                <Badge variant="secondary" className="ml-1">
+                  Mod
+                </Badge>
+              )} • {format(project.timestamp, 'MMM d, yyyy')}
             </CardDescription>
           </div>
           <div className="flex items-center space-x-2">

@@ -4,11 +4,14 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
+import { isLoggedInAsModerator } from '../lib/moderatorStore';
 
 interface Post {
   id: string;
   title: string;
   description: string;
+  author: string;  // Added author property to the interface
   timestamp: number;
   upvotes: number;
   downvotes: number;
@@ -30,6 +33,7 @@ const PostHistoryList: React.FC<PostHistoryListProps> = ({
   showAllLink = true 
 }) => {
   const linkPath = `/${type}`;
+  const isModerator = isLoggedInAsModerator();
   
   return (
     <div className="mb-8">
@@ -48,7 +52,13 @@ const PostHistoryList: React.FC<PostHistoryListProps> = ({
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">{post.title}</CardTitle>
               <CardDescription>
-                Posted on {format(post.timestamp, 'MMM d, yyyy')} • 
+                Posted by <Link to={`/users/${post.author}`} className="hover:underline">
+                  {post.author}
+                </Link>
+                {post.author === 'admin' || post.author === 'moderator' && (
+                  <Badge variant="secondary" className="ml-2">Mod</Badge>
+                )} • 
+                {format(post.timestamp, 'MMM d, yyyy')} • 
                 {post.upvotes - post.downvotes} points • {post.comments.length} comments
               </CardDescription>
             </CardHeader>
