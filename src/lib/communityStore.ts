@@ -1,3 +1,4 @@
+
 import { Community, CommunityPost, CommunityComment, CommunityMember } from './types';
 
 // Initial communities data
@@ -6,21 +7,21 @@ const initialCommunities: Community[] = [
     id: '1',
     name: 'Light Phone Users',
     description: 'For users of the Light Phone, designed to be used as little as possible.',
-    memberCount: 0,
+    member_count: 0,
     slug: 'light-phone'
   },
   {
     id: '2',
     name: 'Brick Phone Enthusiasts',
     description: 'Brick is a physical device that temporarily removes distracting apps and their notifications from your phone.',
-    memberCount: 0,
+    member_count: 0,
     slug: 'brick-phone'
   },
   {
     id: '3',
     name: 'Flip Phone Users',
     description: 'Not everyone needs a smartphone.',
-    memberCount: 0,
+    member_count: 0,
     slug: 'flip-phone'
   }
 ];
@@ -241,7 +242,7 @@ export const joinCommunity = (slug: string): boolean => {
       const communityIndex = communities.findIndex(c => c.slug === slug);
       
       if (communityIndex !== -1) {
-        communities[communityIndex].memberCount += 1;
+        communities[communityIndex].member_count += 1;
         localStorage.setItem('analog-communities', JSON.stringify(communities));
       }
       
@@ -270,8 +271,8 @@ export const leaveCommunity = (slug: string): boolean => {
       const communities = getCommunities();
       const communityIndex = communities.findIndex(c => c.slug === slug);
       
-      if (communityIndex !== -1 && communities[communityIndex].memberCount > 0) {
-        communities[communityIndex].memberCount -= 1;
+      if (communityIndex !== -1 && communities[communityIndex].member_count > 0) {
+        communities[communityIndex].member_count -= 1;
         localStorage.setItem('analog-communities', JSON.stringify(communities));
       }
       

@@ -34,21 +34,21 @@ const initialCommunities: Community[] = [
     id: '1',
     name: 'Light Phone Users',
     description: 'For users of the minimalist Light Phone who want to reduce screen time without sacrificing connectivity.',
-    memberCount: 245,
+    member_count: 245,
     slug: 'light-phone'
   },
   {
     id: '2',
     name: 'Brick Phone Enthusiasts',
     description: 'Embracing the durability and simplicity of brick phones in a smartphone-dominated world.',
-    memberCount: 189,
+    member_count: 189,
     slug: 'brick-phone'
   },
   {
     id: '3',
     name: 'Flip Phone Users',
     description: 'The satisfying snap of closing your phone after a call - join fellow flip phone enthusiasts.',
-    memberCount: 216,
+    member_count: 216,
     slug: 'flip-phone'
   }
 ];
