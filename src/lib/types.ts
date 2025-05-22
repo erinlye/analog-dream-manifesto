@@ -1,4 +1,3 @@
-
 export interface ManifestoEntry {
   id: string;
   content: string;
@@ -11,6 +10,9 @@ export interface Community {
   description: string;
   memberCount: number;
   slug: string;
+  created_by?: string;
+  created_at?: string;
+  member_count?: number;
 }
 
 export interface CommunityMember {

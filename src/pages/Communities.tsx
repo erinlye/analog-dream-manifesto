@@ -1,19 +1,29 @@
 
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Navigation from '../components/Navigation';
 import CommunityCard from '../components/CommunityCard';
+import NewCommunityForm from '../components/NewCommunityForm';
 import { Community } from '../lib/types';
-import { getCommunities, initializeCommunities } from '../lib/store';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Communities = () => {
-  const [communities, setCommunities] = useState<Community[]>([]);
+  const { user } = useAuth();
 
-  useEffect(() => {
-    // Initialize communities data if needed
-    initializeCommunities();
-    // Get communities from storage
-    setCommunities(getCommunities());
-  }, []);
+  // Fetch communities from Supabase
+  const { data: communities = [], isLoading, error } = useQuery({
+    queryKey: ['communities'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('communities')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data as Community[];
+    }
+  });
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -28,13 +38,32 @@ const Communities = () => {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {communities.map(community => (
-              <CommunityCard key={community.id} community={community} />
-            ))}
+            {isLoading ? (
+              <div className="col-span-3 text-center py-12">Loading communities...</div>
+            ) : error ? (
+              <div className="col-span-3 text-center py-12 text-red-500">
+                Error loading communities. Please try again.
+              </div>
+            ) : communities.length === 0 ? (
+              <div className="col-span-3 text-center py-12">
+                No communities found. Be the first to create one!
+              </div>
+            ) : (
+              communities.map(community => (
+                <CommunityCard key={community.id} community={community} />
+              ))
+            )}
+            
             <div className="analog-paper border-dashed flex flex-col items-center justify-center text-center p-8">
               <h3 className="font-sans text-xl mb-2">Start a Community</h3>
               <p className="text-ink-400 mb-4 font-sans">Don't see your analog interest represented?</p>
-              <button className="analog-button mt-2">Create New</button>
+              {user ? (
+                <NewCommunityForm />
+              ) : (
+                <div className="text-ink-400 mt-2 text-sm">
+                  Please sign in to create a new community
+                </div>
+              )}
             </div>
           </div>
         </div>

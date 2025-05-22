@@ -13,7 +13,7 @@ const CommunityCard = ({ community }: CommunityCardProps) => {
         <h3 className="font-serif text-xl mb-2">{community.name}</h3>
         <p className="text-ink-400 mb-4">{community.description}</p>
         <div className="text-sm text-ink-300">
-          {community.memberCount} members
+          {community.memberCount || community.member_count || 0} members
         </div>
       </div>
     </Link>
