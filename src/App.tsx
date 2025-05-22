@@ -15,6 +15,7 @@ import Organizing from "./pages/Organizing";
 import Plugs from "./pages/Plugs";
 import Norms from "./pages/Norms";
 import CommunityDetail from "./pages/CommunityDetail";
+import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/organizing" element={<Organizing />} />
             <Route path="/plugs" element={<Plugs />} />
             <Route path="/norms" element={<Norms />} />
+            <Route path="/users/:username" element={<UserProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

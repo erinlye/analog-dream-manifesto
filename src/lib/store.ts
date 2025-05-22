@@ -1,5 +1,5 @@
 
-import { ManifestoEntry, Community } from './types';
+import { ManifestoEntry, Community, LearningPost, ImaginingPost, OrganizingPost, PlugPost } from './types';
 
 // Get manifesto entries from localStorage
 export const getManifestoEntries = (): ManifestoEntry[] => {
@@ -68,5 +68,49 @@ export const getCommunities = (): Community[] => {
 export const initializeCommunities = () => {
   if (!localStorage.getItem('analog-communities')) {
     localStorage.setItem('analog-communities', JSON.stringify(initialCommunities));
+  }
+};
+
+// Get all learning posts from localStorage
+export const getAllLearningPosts = (): LearningPost[] => {
+  try {
+    const posts = localStorage.getItem('analog-learning-posts');
+    return posts ? JSON.parse(posts) : [];
+  } catch (error) {
+    console.error('Error reading learning posts:', error);
+    return [];
+  }
+};
+
+// Get all imagining posts from localStorage
+export const getAllImaginingPosts = (): ImaginingPost[] => {
+  try {
+    const posts = localStorage.getItem('analog-imagining-posts');
+    return posts ? JSON.parse(posts) : [];
+  } catch (error) {
+    console.error('Error reading imagining posts:', error);
+    return [];
+  }
+};
+
+// Get all organizing posts from localStorage
+export const getAllOrganizingPosts = (): OrganizingPost[] => {
+  try {
+    const posts = localStorage.getItem('analog-organizing-posts');
+    return posts ? JSON.parse(posts) : [];
+  } catch (error) {
+    console.error('Error reading organizing posts:', error);
+    return [];
+  }
+};
+
+// Get all plug posts from localStorage
+export const getAllPlugPosts = (): PlugPost[] => {
+  try {
+    const posts = localStorage.getItem('analog-plug-posts');
+    return posts ? JSON.parse(posts) : [];
+  } catch (error) {
+    console.error('Error reading plug posts:', error);
+    return [];
   }
 };

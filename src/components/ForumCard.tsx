@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
@@ -113,7 +114,11 @@ const ForumCard = ({
           <div>
             <CardTitle className="text-2xl mb-2">{post.title}</CardTitle>
             <CardDescription className="text-sm mb-2">
-              Posted by {post.author} • {format(post.timestamp, 'MMM d, yyyy')}
+              Posted by{" "}
+              <Link to={`/users/${post.author}`} className="hover:underline">
+                {post.author}
+              </Link>{" "}
+              • {format(post.timestamp, 'MMM d, yyyy')}
             </CardDescription>
           </div>
           <div className="flex items-center space-x-2">
