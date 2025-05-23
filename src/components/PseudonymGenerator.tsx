@@ -5,13 +5,25 @@ import { generatePseudonym } from '../utils/pseudonymGenerator';
 import AuthModal from './AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
 
-const PseudonymGenerator = () => {
+interface PseudonymGeneratorProps {
+  onSelect?: (pseudonym: string) => void;
+}
+
+const PseudonymGenerator: React.FC<PseudonymGeneratorProps> = ({ onSelect }) => {
   const [pseudonym, setPseudonym] = useState(generatePseudonym());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user } = useAuth();
 
   const handleGenerateNew = () => {
     setPseudonym(generatePseudonym());
+  };
+
+  const handleOpenAuthModal = () => {
+    if (onSelect) {
+      onSelect(pseudonym);
+    } else {
+      setIsAuthModalOpen(true);
+    }
   };
 
   return (
@@ -30,7 +42,7 @@ const PseudonymGenerator = () => {
         
         {!user && (
           <Button 
-            onClick={() => setIsAuthModalOpen(true)}
+            onClick={handleOpenAuthModal}
             className="bg-gradient-to-b from-[#FFFF99] to-[#FFCC00] text-[#996600] border-2 border-[#FFCC00] font-bold text-sm shadow-md hover:from-[#FFCC00] hover:to-[#CC9900] px-4 py-2 rounded-lg"
           >
             join with this name
@@ -38,11 +50,13 @@ const PseudonymGenerator = () => {
         )}
       </div>
 
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)}
-        pseudonym={pseudonym}
-      />
+      {!onSelect && (
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)}
+          pseudonym={pseudonym}
+        />
+      )}
     </div>
   );
 };
