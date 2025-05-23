@@ -3,16 +3,24 @@ import { v4 as uuidv4 } from 'uuid';
 import { CommunityPost, CommunityComment } from './types';
 
 // In-memory storage for community posts
-let communityPosts: CommunityPost[] = JSON.parse(localStorage.getItem('communityPosts') || '[]');
+let communityPosts: CommunityPost[] = [];
+
+// Initialize posts from localStorage if available
+if (typeof window !== 'undefined') {
+  communityPosts = JSON.parse(localStorage.getItem('communityPosts') || '[]');
+}
 
 // Save posts to localStorage
 const savePosts = () => {
-  localStorage.setItem('communityPosts', JSON.stringify(communityPosts));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('communityPosts', JSON.stringify(communityPosts));
+  }
 };
 
 // Get all posts for a specific community
 export const getCommunityPosts = (communityId: string): CommunityPost[] => {
-  return communityPosts.filter(post => post.communityId === communityId).sort((a, b) => b.timestamp - a.timestamp);
+  return communityPosts.filter(post => post.communityId === communityId)
+    .sort((a, b) => b.timestamp - a.timestamp);
 };
 
 // Get a specific post by ID
