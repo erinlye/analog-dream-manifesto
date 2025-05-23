@@ -1,4 +1,3 @@
-
 export interface ManifestoEntry {
   id: string;
   content: string;

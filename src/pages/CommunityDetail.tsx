@@ -1,5 +1,6 @@
 
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Navigation from '../components/Navigation';
 import { Community } from '../lib/types';
@@ -7,12 +8,26 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import NewCommunityPostForm from '../components/NewCommunityPostForm';
+import ForumCard from '../components/ForumCard';
+import { 
+  getCommunityPosts, 
+  addCommunityComment,
+  toggleCommunityUpvote,
+  toggleCommunityDownvote,
+  deleteCommunityPost,
+  getCommunityPostsByPopularity
+} from '../lib/communityPostStore';
 
 const CommunityDetail = () => {
   const { slug } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
+  const [posts, setPosts] = useState(() => {
+    return slug ? getCommunityPosts(slug) : [];
+  });
 
   // Fetch community details
   const { data: community, isLoading: loadingCommunity } = useQuery({
@@ -138,6 +153,40 @@ const CommunityDetail = () => {
     }
   };
 
+  const loadPosts = () => {
+    if (!slug) return;
+    
+    if (sortBy === 'recent') {
+      setPosts(getCommunityPosts(slug));
+    } else {
+      setPosts(getCommunityPostsByPopularity(slug));
+    }
+  };
+
+  const handlePostAdded = () => {
+    loadPosts();
+  };
+
+  const handleUpvote = (postId: string) => {
+    toggleCommunityUpvote(postId);
+    loadPosts();
+  };
+
+  const handleDownvote = (postId: string) => {
+    toggleCommunityDownvote(postId);
+    loadPosts();
+  };
+
+  const handleAddComment = (postId: string, comment: { author: string; content: string }) => {
+    addCommunityComment(postId, comment);
+    loadPosts();
+  };
+
+  const handleDeletePost = (postId: string) => {
+    deleteCommunityPost(postId);
+    loadPosts();
+  };
+
   if (loadingCommunity) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -185,11 +234,65 @@ const CommunityDetail = () => {
           </div>
           
           <div className="analog-paper p-6">
-            {/* Community content will go here */}
-            <h2 className="text-xl font-serif mb-4">Community Posts</h2>
-            <p className="text-ink-400">
-              This is where community posts will appear.
-            </p>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-serif mb-0">Community Posts</h2>
+              <div className="space-x-2">
+                <Button 
+                  variant={sortBy === 'recent' ? 'default' : 'outline'}
+                  onClick={() => {
+                    setSortBy('recent');
+                    loadPosts();
+                  }}
+                  size="sm"
+                >
+                  Recent
+                </Button>
+                <Button 
+                  variant={sortBy === 'popular' ? 'default' : 'outline'}
+                  onClick={() => {
+                    setSortBy('popular');
+                    loadPosts();
+                  }}
+                  size="sm"
+                >
+                  Popular
+                </Button>
+              </div>
+            </div>
+            
+            {isMember && (
+              <NewCommunityPostForm 
+                communityId={community.id} 
+                onPostAdded={handlePostAdded} 
+              />
+            )}
+            
+            <div className="space-y-6">
+              {posts.length > 0 ? (
+                posts.map(post => (
+                  <ForumCard 
+                    key={post.id} 
+                    post={post}
+                    onUpvote={handleUpvote}
+                    onDownvote={handleDownvote}
+                    onAddComment={handleAddComment}
+                    onDelete={handleDeletePost}
+                    onUpdate={loadPosts}
+                    resourceType="communityPost"
+                    communitySlug={slug}
+                  />
+                ))
+              ) : (
+                <div className="text-center py-10">
+                  <h3 className="text-lg font-serif mb-2">No Posts Yet</h3>
+                  {isMember ? (
+                    <p>Be the first to share a post with this community!</p>
+                  ) : (
+                    <p>Join this community to start posting.</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>
