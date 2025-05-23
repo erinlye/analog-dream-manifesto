@@ -83,4 +83,3 @@ export const getCommunityPostsByPopularity = (communityId: string): CommunityPos
     .filter(post => post.communityId === communityId)
     .sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
 };
-
