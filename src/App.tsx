@@ -8,11 +8,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Manifesto from "./pages/Manifesto";
 import Communities from "./pages/Communities";
-import Projects from "./pages/Projects";
 import Learning from "./pages/Learning";
 import Imagining from "./pages/Imagining";
 import Organizing from "./pages/Organizing";
-import Plugs from "./pages/Plugs";
 import Norms from "./pages/Norms";
 import Settings from "./pages/Settings";
 import CommunityDetail from "./pages/CommunityDetail";
@@ -33,11 +31,9 @@ const App = () => (
             <Route path="/manifesto" element={<Manifesto />} />
             <Route path="/communities" element={<Communities />} />
             <Route path="/communities/:slug" element={<CommunityDetail />} />
-            <Route path="/projects" element={<Projects />} />
             <Route path="/learning" element={<Learning />} />
             <Route path="/imagining" element={<Imagining />} />
             <Route path="/organizing" element={<Organizing />} />
-            <Route path="/plugs" element={<Plugs />} />
             <Route path="/norms" element={<Norms />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/users/:username" element={<UserProfile />} />

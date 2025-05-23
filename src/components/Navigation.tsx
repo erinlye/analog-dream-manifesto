@@ -38,22 +38,18 @@ const Navigation = ({ isDisabled = false, onDisabledClick }: NavigationProps) =>
             <>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>manifesto</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>communities</a>
-              <a href="#" onClick={handleDisabledClick} className={linkClass}>projects</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>learning</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>imagining</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>organizing</a>
-              <a href="#" onClick={handleDisabledClick} className={linkClass}>plugs</a>
               <a href="#" onClick={handleDisabledClick} className={linkClass}>norms</a>
             </>
           ) : (
             <>
               <Link to="/manifesto" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>manifesto</Link>
               <Link to="/communities" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>communities</Link>
-              <Link to="/projects" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>projects</Link>
               <Link to="/learning" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>learning</Link>
               <Link to="/imagining" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>imagining</Link>
               <Link to="/organizing" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>organizing</Link>
-              <Link to="/plugs" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>plugs</Link>
               <Link to="/norms" className={`${linkClass} font-comic text-sm bg-[#3080C0] px-3 py-1 rounded-md border border-[#246090] hover:bg-[#246090]`}>norms</Link>
             </>
           )}
