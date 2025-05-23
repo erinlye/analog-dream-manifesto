@@ -11,7 +11,7 @@ interface Post {
   id: string;
   title: string;
   description: string;
-  author: string;  // Added author property to the interface
+  author: string;
   timestamp: number;
   upvotes: number;
   downvotes: number;
@@ -55,7 +55,7 @@ const PostHistoryList: React.FC<PostHistoryListProps> = ({
                 Posted by <Link to={`/users/${post.author}`} className="hover:underline">
                   {post.author}
                 </Link>
-                {post.author === 'admin' || post.author === 'moderator' && (
+                {(post.author === 'admin' || post.author === 'moderator') && (
                   <Badge variant="secondary" className="ml-2">Mod</Badge>
                 )} • 
                 {format(post.timestamp, 'MMM d, yyyy')} • 

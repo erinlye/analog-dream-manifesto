@@ -9,10 +9,15 @@ import { getManifestoEntries } from '../lib/store';
 import ManifestoEntries from '../components/ManifestoEntries';
 import AuthStatus from '../components/AuthStatus';
 import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { User, LogIn, Settings } from 'lucide-react';
+import AuthModal from '../components/AuthModal';
 
 const Index = () => {
   const [hasContributed, setHasContributed] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [currentPseudonym, setCurrentPseudonym] = useState("");
   const { user } = useAuth();
 
   // Check if the user has already contributed to the manifesto
@@ -32,6 +37,11 @@ const Index = () => {
       setDialogOpen(true);
       return;
     }
+  };
+
+  const handleOpenAuthModal = (pseudonym: string) => {
+    setCurrentPseudonym(pseudonym);
+    setAuthModalOpen(true);
   };
 
   return (
@@ -54,7 +64,7 @@ const Index = () => {
             <ManifestoEntries />
           </div>
           
-          <PseudonymGenerator />
+          <PseudonymGenerator onSelect={handleOpenAuthModal} />
           
           <div className="max-w-2xl mx-auto">
             <AnalogQuestion onContributionSubmitted={handleContribution} />
@@ -64,34 +74,51 @@ const Index = () => {
             <h2 className="font-serif text-2xl mb-6">Join the movement</h2>
             <p className="text-ink-400 mb-8">Connect with others who are seeking intentional relationships with technology.</p>
             <div className="flex flex-wrap justify-center gap-4">
+              {user ? (
+                <>
+                  <Link 
+                    to={`/users/${user.user_metadata?.pseudonym || 'profile'}`} 
+                    className="analog-button flex items-center gap-2"
+                  >
+                    <User size={18} />
+                    My Profile
+                  </Link>
+                  <Link 
+                    to="/settings" 
+                    className="px-6 py-3 border border-ink-300 rounded-sm hover:bg-paper-100 transition-colors flex items-center gap-2"
+                  >
+                    <Settings size={18} />
+                    Settings
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => handleOpenAuthModal(currentPseudonym)} 
+                    className="analog-button flex items-center gap-2"
+                  >
+                    <LogIn size={18} />
+                    Sign In / Join
+                  </button>
+                </>
+              )}
+              
               {hasContributed ? (
                 <>
                   <Link 
                     to="/communities" 
-                    className="analog-button"
-                  >
-                    Explore Communities
-                  </Link>
-                  <Link 
-                    to="/manifesto" 
                     className="px-6 py-3 border border-ink-300 rounded-sm hover:bg-paper-100 transition-colors"
                   >
-                    Read Our Manifesto
+                    Explore Communities
                   </Link>
                 </>
               ) : (
                 <>
                   <button 
                     onClick={handleOpenDialog}
-                    className="analog-button opacity-75 cursor-not-allowed"
-                  >
-                    Explore Communities
-                  </button>
-                  <button 
-                    onClick={handleOpenDialog}
                     className="px-6 py-3 border border-ink-300 rounded-sm opacity-75 cursor-not-allowed"
                   >
-                    Read Our Manifesto
+                    Explore Communities
                   </button>
                 </>
               )}
@@ -113,6 +140,12 @@ const Index = () => {
           </p>
         </DialogContent>
       </Dialog>
+
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        pseudonym={currentPseudonym}
+      />
 
       <footer className="border-t border-paper-300/40 py-8">
         <div className="analog-container text-center text-ink-400 text-sm">
