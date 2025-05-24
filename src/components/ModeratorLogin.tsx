@@ -1,8 +1,7 @@
 
-import { useState } from 'react';
-import { loginAsModerator, logoutModerator, isLoggedInAsModerator, getCurrentModerator } from '../lib/moderatorStore';
+import { useState, useEffect } from 'react';
+import { getCurrentModerator, isLoggedInAsModerator } from '../lib/moderatorStore';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 import { 
   Dialog,
   DialogContent,
@@ -13,97 +12,87 @@ import {
   DialogFooter,
   DialogClose
 } from '../components/ui/dialog';
+import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
 
 const ModeratorLogin = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
+  const [isModeratorLoggedIn, setIsModeratorLoggedIn] = useState(false);
+  const [moderator, setModerator] = useState<any>(null);
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
-  const isLoggedIn = isLoggedInAsModerator();
-  const moderator = getCurrentModerator();
 
-  const handleLogin = () => {
-    if (loginAsModerator(username, password)) {
-      toast({
-        title: "Login successful",
-        description: "You are now logged in as a moderator"
-      });
-      setOpen(false);
-      setUsername('');
-      setPassword('');
-    } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid username or password",
-        variant: "destructive"
-      });
-    }
-  };
+  useEffect(() => {
+    const checkModeratorStatus = async () => {
+      if (user) {
+        const isMod = await isLoggedInAsModerator();
+        setIsModeratorLoggedIn(isMod);
+        
+        if (isMod) {
+          const modData = await getCurrentModerator();
+          setModerator(modData);
+        }
+      } else {
+        setIsModeratorLoggedIn(false);
+        setModerator(null);
+      }
+    };
 
-  const handleLogout = () => {
-    logoutModerator();
+    checkModeratorStatus();
+  }, [user]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsModeratorLoggedIn(false);
+    setModerator(null);
     toast({
-      title: "Logged out",
-      description: "You have been logged out"
+      title: "Signed out",
+      description: "You have been signed out"
     });
+    setOpen(false);
   };
+
+  if (!user) {
+    return (
+      <Button variant="outline" size="sm" className="ml-2" disabled>
+        Sign in to moderate
+      </Button>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="ml-2">
-          {isLoggedIn ? `Moderator: ${moderator?.username}` : 'Moderator Login'}
+          {isModeratorLoggedIn ? `Moderator: ${moderator?.email || 'Active'}` : 'Not a Moderator'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        {!isLoggedIn ? (
+        {isModeratorLoggedIn ? (
           <>
             <DialogHeader>
-              <DialogTitle>Moderator Login</DialogTitle>
+              <DialogTitle>Moderator Status</DialogTitle>
               <DialogDescription>
-                Login with your moderator credentials to access moderation tools.
+                You are signed in as a moderator with email: {moderator?.email}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="username" className="text-right">
-                  Username
-                </label>
-                <Input
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="password" className="text-right">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-            </div>
             <DialogFooter>
-              <Button onClick={handleLogin}>Login</Button>
+              <Button variant="destructive" onClick={handleSignOut}>Sign Out</Button>
+              <DialogClose asChild>
+                <Button variant="outline">Close</Button>
+              </DialogClose>
             </DialogFooter>
           </>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Moderator Options</DialogTitle>
+              <DialogTitle>Not a Moderator</DialogTitle>
               <DialogDescription>
-                You are logged in as {moderator?.username}.
+                Your account ({user.email}) is not registered as a moderator. 
+                Contact an administrator to request moderator access.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="destructive" onClick={handleLogout}>Logout</Button>
               <DialogClose asChild>
                 <Button variant="outline">Close</Button>
               </DialogClose>

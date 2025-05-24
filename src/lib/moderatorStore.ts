@@ -1,85 +1,39 @@
 
-// Store for moderator authentication and management
-interface Moderator {
-  id: string;
-  username: string;
-  password: string; // In a real app, this would be hashed
-}
+import { supabase } from '@/integrations/supabase/client';
 
-// Initial moderators (in a real app, these would be in a secure database)
-const initialModerators: Moderator[] = [
-  {
-    id: '1',
-    username: 'admin',
-    password: 'admin123' // This is just for demo purposes
-  },
-  {
-    id: '2',
-    username: 'moderator',
-    password: 'mod123'
-  }
-];
-
-// Track current logged in moderator
-let currentModerator: Moderator | null = null;
-
-// Check if a user is logged in as a moderator
-export const isLoggedInAsModerator = (): boolean => {
+// Check if a user is logged in as a moderator using Supabase
+export const isLoggedInAsModerator = async (): Promise<boolean> => {
   try {
-    const storedModerator = localStorage.getItem('analog-current-moderator');
-    if (storedModerator) {
-      currentModerator = JSON.parse(storedModerator);
-      return true;
-    }
-    return false;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data: isMod } = await supabase.rpc('is_moderator', { user_id: user.id });
+    return !!isMod;
   } catch (error) {
     console.error('Error checking moderator status:', error);
     return false;
   }
 };
 
-// Login as moderator
-export const loginAsModerator = (username: string, password: string): boolean => {
+// Get current moderator info from Supabase
+export const getCurrentModerator = async () => {
   try {
-    const moderator = initialModerators.find(
-      m => m.username === username && m.password === password
-    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
 
-    if (moderator) {
-      // Store moderator info (without password) in localStorage
-      const { password: _, ...moderatorInfo } = moderator;
-      currentModerator = moderator;
-      localStorage.setItem('analog-current-moderator', JSON.stringify(moderatorInfo));
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    console.error('Error logging in as moderator:', error);
-    return false;
-  }
-};
+    const { data: moderator } = await supabase
+      .from('moderators')
+      .select('*')
+      .eq('id', user.id)
+      .single();
 
-// Logout moderator
-export const logoutModerator = (): void => {
-  try {
-    localStorage.removeItem('analog-current-moderator');
-    currentModerator = null;
-  } catch (error) {
-    console.error('Error logging out moderator:', error);
-  }
-};
-
-// Get current moderator info
-export const getCurrentModerator = (): Omit<Moderator, 'password'> | null => {
-  try {
-    const storedModerator = localStorage.getItem('analog-current-moderator');
-    if (storedModerator) {
-      return JSON.parse(storedModerator);
-    }
-    return null;
+    return moderator;
   } catch (error) {
     console.error('Error getting current moderator:', error);
     return null;
   }
 };
+
+// These functions are no longer needed with Supabase auth but kept for compatibility
+export const loginAsModerator = () => false;
+export const logoutModerator = () => {};

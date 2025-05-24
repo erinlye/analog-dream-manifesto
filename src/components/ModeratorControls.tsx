@@ -1,9 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction } from './ui/alert-dialog';
 import { isLoggedInAsModerator } from '../lib/moderatorStore';
-import { Trash2, ShieldCheck } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { addModeratorDeletionNotification } from '../lib/userPostHistory';
 
 interface ModeratorControlsProps {
@@ -24,7 +24,16 @@ const ModeratorControls = ({
   postTitle = 'this post'
 }: ModeratorControlsProps) => {
   const [open, setOpen] = useState(false);
-  const isModeratorLoggedIn = isLoggedInAsModerator();
+  const [isModeratorLoggedIn, setIsModeratorLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkModeratorStatus = async () => {
+      const isMod = await isLoggedInAsModerator();
+      setIsModeratorLoggedIn(isMod);
+    };
+
+    checkModeratorStatus();
+  }, []);
 
   if (!isModeratorLoggedIn) {
     return null;
@@ -42,7 +51,6 @@ const ModeratorControls = ({
   };
 
   const handleConfirmDelete = () => {
-    // If we have the author's username, notify them about the deletion
     if (authorUsername) {
       addModeratorDeletionNotification(authorUsername, postTitle);
     }
