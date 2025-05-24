@@ -9,7 +9,7 @@ const Norms = () => {
       <main className="flex-1">
         <div className="analog-container">
           <header className="mb-10 mt-6">
-            <h1 className="text-3xl md:text-4xl font-sans font-bold italic mb-4">community norms that keep analog abundant</h1>
+            <h1 className="text-3xl md:text-4xl font-serif font-bold italic mb-4">community norms that keep analog abundant</h1>
           </header>
           
           <Card className="analog-paper mb-6">
