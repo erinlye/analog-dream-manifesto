@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -260,9 +259,9 @@ const CommunityDetail = () => {
               </div>
             </div>
             
-            {isMember && (
+            {isMember && slug && (
               <NewCommunityPostForm 
-                communityId={community.id} 
+                communityId={slug} 
                 onPostAdded={handlePostAdded} 
               />
             )}
