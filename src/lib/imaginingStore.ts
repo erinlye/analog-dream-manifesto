@@ -1,4 +1,8 @@
+
 import { ImaginingPost, ImaginingComment } from "./types";
+
+// Key for localStorage
+const IMAGINING_POSTS_KEY = 'analog-imagining-posts';
 
 // Sample initial imagining posts
 const initialImaginingPosts: ImaginingPost[] = [
@@ -46,23 +50,41 @@ const initialImaginingPosts: ImaginingPost[] = [
   }
 ];
 
-// In-memory store of imagining posts
-let imaginingPosts = [...initialImaginingPosts];
+// Initialize localStorage with sample data if empty
+const initializeLocalStorage = () => {
+  const existingPosts = localStorage.getItem(IMAGINING_POSTS_KEY);
+  if (!existingPosts) {
+    localStorage.setItem(IMAGINING_POSTS_KEY, JSON.stringify(initialImaginingPosts));
+  }
+};
 
-// Get all imagining posts
+// Get all imagining posts from localStorage
 export const getAllImaginingPosts = (): ImaginingPost[] => {
-  return [...imaginingPosts].sort((a, b) => b.timestamp - a.timestamp);
+  initializeLocalStorage();
+  try {
+    const posts = localStorage.getItem(IMAGINING_POSTS_KEY);
+    return posts ? JSON.parse(posts) : [];
+  } catch (error) {
+    console.error('Error reading imagining posts:', error);
+    return [];
+  }
 };
 
 // Get imagining posts sorted by popularity (upvotes - downvotes)
 export const getImaginingPostsByPopularity = (): ImaginingPost[] => {
-  return [...imaginingPosts].sort((a, b) => 
+  return getAllImaginingPosts().sort((a, b) => 
     (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)
   );
 };
 
+// Save posts to localStorage
+const savePosts = (posts: ImaginingPost[]) => {
+  localStorage.setItem(IMAGINING_POSTS_KEY, JSON.stringify(posts));
+};
+
 // Add a new imagining post
 export const addImaginingPost = (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): ImaginingPost => {
+  const posts = getAllImaginingPosts();
   const newPost: ImaginingPost = {
     ...post,
     id: Date.now().toString(),
@@ -70,20 +92,23 @@ export const addImaginingPost = (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'd
     downvotes: 0,
     comments: []
   };
-  imaginingPosts = [newPost, ...imaginingPosts];
+  const updatedPosts = [newPost, ...posts];
+  savePosts(updatedPosts);
   return newPost;
 };
 
 // Delete an imagining post
 export const deleteImaginingPost = (postId: string): boolean => {
-  const initialLength = imaginingPosts.length;
-  imaginingPosts = imaginingPosts.filter(p => p.id !== postId);
-  return imaginingPosts.length < initialLength;
+  const posts = getAllImaginingPosts();
+  const updatedPosts = posts.filter(p => p.id !== postId);
+  savePosts(updatedPosts);
+  return updatedPosts.length < posts.length;
 };
 
 // Add a comment to an imagining post
 export const addImaginingComment = (postId: string, comment: Omit<ImaginingComment, 'id' | 'timestamp'>): ImaginingComment | null => {
-  const postIndex = imaginingPosts.findIndex(p => p.id === postId);
+  const posts = getAllImaginingPosts();
+  const postIndex = posts.findIndex(p => p.id === postId);
   if (postIndex === -1) return null;
 
   const newComment: ImaginingComment = {
@@ -92,24 +117,29 @@ export const addImaginingComment = (postId: string, comment: Omit<ImaginingComme
     timestamp: Date.now()
   };
 
-  imaginingPosts[postIndex].comments.push(newComment);
+  posts[postIndex].comments.push(newComment);
+  savePosts(posts);
   return newComment;
 };
 
 // Toggle upvote on an imagining post
 export const toggleImaginingUpvote = (postId: string): ImaginingPost | null => {
-  const postIndex = imaginingPosts.findIndex(p => p.id === postId);
+  const posts = getAllImaginingPosts();
+  const postIndex = posts.findIndex(p => p.id === postId);
   if (postIndex === -1) return null;
 
-  imaginingPosts[postIndex].upvotes += 1;
-  return imaginingPosts[postIndex];
+  posts[postIndex].upvotes += 1;
+  savePosts(posts);
+  return posts[postIndex];
 };
 
 // Toggle downvote on an imagining post
 export const toggleImaginingDownvote = (postId: string): ImaginingPost | null => {
-  const postIndex = imaginingPosts.findIndex(p => p.id === postId);
+  const posts = getAllImaginingPosts();
+  const postIndex = posts.findIndex(p => p.id === postId);
   if (postIndex === -1) return null;
 
-  imaginingPosts[postIndex].downvotes += 1;
-  return imaginingPosts[postIndex];
+  posts[postIndex].downvotes += 1;
+  savePosts(posts);
+  return posts[postIndex];
 };

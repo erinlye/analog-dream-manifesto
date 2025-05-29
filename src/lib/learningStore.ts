@@ -1,4 +1,8 @@
+
 import { LearningPost, LearningComment } from "./types";
+
+// Key for localStorage
+const LEARNING_POSTS_KEY = 'analog-learning-posts';
 
 // Sample initial learning posts
 const initialLearningPosts: LearningPost[] = [
@@ -46,23 +50,41 @@ const initialLearningPosts: LearningPost[] = [
   }
 ];
 
-// In-memory store of learning posts
-let learningPosts = [...initialLearningPosts];
+// Initialize localStorage with sample data if empty
+const initializeLocalStorage = () => {
+  const existingPosts = localStorage.getItem(LEARNING_POSTS_KEY);
+  if (!existingPosts) {
+    localStorage.setItem(LEARNING_POSTS_KEY, JSON.stringify(initialLearningPosts));
+  }
+};
 
-// Get all learning posts
+// Get all learning posts from localStorage
 export const getAllLearningPosts = (): LearningPost[] => {
-  return [...learningPosts].sort((a, b) => b.timestamp - a.timestamp);
+  initializeLocalStorage();
+  try {
+    const posts = localStorage.getItem(LEARNING_POSTS_KEY);
+    return posts ? JSON.parse(posts) : [];
+  } catch (error) {
+    console.error('Error reading learning posts:', error);
+    return [];
+  }
 };
 
 // Get learning posts sorted by popularity (upvotes - downvotes)
 export const getLearningPostsByPopularity = (): LearningPost[] => {
-  return [...learningPosts].sort((a, b) => 
+  return getAllLearningPosts().sort((a, b) => 
     (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)
   );
 };
 
+// Save posts to localStorage
+const savePosts = (posts: LearningPost[]) => {
+  localStorage.setItem(LEARNING_POSTS_KEY, JSON.stringify(posts));
+};
+
 // Add a new learning post
 export const addLearningPost = (post: Omit<LearningPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): LearningPost => {
+  const posts = getAllLearningPosts();
   const newPost: LearningPost = {
     ...post,
     id: Date.now().toString(),
@@ -70,20 +92,23 @@ export const addLearningPost = (post: Omit<LearningPost, 'id' | 'upvotes' | 'dow
     downvotes: 0,
     comments: []
   };
-  learningPosts = [newPost, ...learningPosts];
+  const updatedPosts = [newPost, ...posts];
+  savePosts(updatedPosts);
   return newPost;
 };
 
 // Delete a learning post
 export const deleteLearningPost = (postId: string): boolean => {
-  const initialLength = learningPosts.length;
-  learningPosts = learningPosts.filter(p => p.id !== postId);
-  return learningPosts.length < initialLength;
+  const posts = getAllLearningPosts();
+  const updatedPosts = posts.filter(p => p.id !== postId);
+  savePosts(updatedPosts);
+  return updatedPosts.length < posts.length;
 };
 
 // Add a comment to a learning post
 export const addLearningComment = (postId: string, comment: Omit<LearningComment, 'id' | 'timestamp'>): LearningComment | null => {
-  const postIndex = learningPosts.findIndex(p => p.id === postId);
+  const posts = getAllLearningPosts();
+  const postIndex = posts.findIndex(p => p.id === postId);
   if (postIndex === -1) return null;
 
   const newComment: LearningComment = {
@@ -92,24 +117,29 @@ export const addLearningComment = (postId: string, comment: Omit<LearningComment
     timestamp: Date.now()
   };
 
-  learningPosts[postIndex].comments.push(newComment);
+  posts[postIndex].comments.push(newComment);
+  savePosts(posts);
   return newComment;
 };
 
 // Toggle upvote on a learning post
 export const toggleLearningUpvote = (postId: string): LearningPost | null => {
-  const postIndex = learningPosts.findIndex(p => p.id === postId);
+  const posts = getAllLearningPosts();
+  const postIndex = posts.findIndex(p => p.id === postId);
   if (postIndex === -1) return null;
 
-  learningPosts[postIndex].upvotes += 1;
-  return learningPosts[postIndex];
+  posts[postIndex].upvotes += 1;
+  savePosts(posts);
+  return posts[postIndex];
 };
 
 // Toggle downvote on a learning post
 export const toggleLearningDownvote = (postId: string): LearningPost | null => {
-  const postIndex = learningPosts.findIndex(p => p.id === postId);
+  const posts = getAllLearningPosts();
+  const postIndex = posts.findIndex(p => p.id === postId);
   if (postIndex === -1) return null;
 
-  learningPosts[postIndex].downvotes += 1;
-  return learningPosts[postIndex];
+  posts[postIndex].downvotes += 1;
+  savePosts(posts);
+  return posts[postIndex];
 };
