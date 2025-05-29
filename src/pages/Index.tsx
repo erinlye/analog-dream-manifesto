@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import AnalogQuestion from '../components/AnalogQuestion';
@@ -51,6 +52,8 @@ const Index = () => {
         <AuthStatus />
       </div>
       
+      <Navigation isDisabled={!hasContributed} onDisabledClick={handleOpenDialog} />
+      
       {/* Desktop-only notice */}
       <div className="analog-container pt-4">
         <Alert className="analog-paper border-ink-200 mb-6">
@@ -62,7 +65,6 @@ const Index = () => {
         </Alert>
       </div>
 
-      <Navigation isDisabled={!hasContributed} onDisabledClick={handleOpenDialog} />
       <main className="flex-1">
         <section className="analog-container py-16">
           <div className="mb-16 text-center">
