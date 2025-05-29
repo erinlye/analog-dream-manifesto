@@ -1,36 +1,56 @@
 
 import { useEffect, useState } from 'react';
-import { ManifestoEntry } from '../lib/types';
-import { getManifestoEntries } from '../lib/store';
+import { ManifestoEntry, getManifestoEntries } from '../lib/manifestoStore';
+import { supabase } from '@/integrations/supabase/client';
 
 const ManifestoEntries = () => {
   const [entries, setEntries] = useState<ManifestoEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadEntries = () => {
-      setEntries(getManifestoEntries());
+    const loadEntries = async () => {
+      try {
+        const manifestoEntries = await getManifestoEntries();
+        setEntries(manifestoEntries);
+      } catch (error) {
+        console.error('Error loading manifesto entries:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     // Load initial entries
     loadEntries();
 
-    // Listen for storage changes to update entries when new ones are added
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'analog-manifesto') {
-        loadEntries();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check for updates periodically in case storage event doesn't fire
-    const interval = setInterval(loadEntries, 1000);
+    // Set up real-time subscription for new entries
+    const channel = supabase
+      .channel('manifesto-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'manifesto_entries'
+        },
+        () => {
+          // Reload entries when changes occur
+          loadEntries();
+        }
+      )
+      .subscribe();
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
+      supabase.removeChannel(channel);
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-lg font-serif text-ink-400">Loading manifesto entries...</p>
+      </div>
+    );
+  }
 
   if (entries.length === 0) {
     return (
@@ -46,7 +66,7 @@ const ManifestoEntries = () => {
         <div key={entry.id} className="analog-paper">
           <p className="font-serif text-lg">{entry.content}</p>
           <div className="mt-4 text-sm text-ink-400">
-            {new Date(entry.timestamp).toLocaleDateString(undefined, { 
+            {new Date(entry.created_at).toLocaleDateString(undefined, { 
               year: 'numeric', 
               month: 'long', 
               day: 'numeric'

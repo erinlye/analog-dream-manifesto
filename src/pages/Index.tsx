@@ -6,7 +6,7 @@ import PseudonymGenerator from '../components/PseudonymGenerator';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getManifestoEntries } from '../lib/store';
+import { getManifestoEntries } from '../lib/manifestoStore';
 import ManifestoEntries from '../components/ManifestoEntries';
 import AuthStatus from '../components/AuthStatus';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,10 +24,14 @@ const Index = () => {
 
   // Check if the user has already contributed to the manifesto
   useEffect(() => {
-    const entries = getManifestoEntries();
-    if (entries.length > 0 || user) {
-      setHasContributed(true);
-    }
+    const checkContributions = async () => {
+      const entries = await getManifestoEntries();
+      if (entries.length > 0 || user) {
+        setHasContributed(true);
+      }
+    };
+    
+    checkContributions();
   }, [user]);
 
   const handleContribution = () => {

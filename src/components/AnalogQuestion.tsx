@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { addManifestoEntry } from '../lib/store';
+import { addManifestoEntry } from '../lib/manifestoStore';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../hooks/use-toast';
 import PseudonymGenerator from './PseudonymGenerator';
@@ -16,16 +16,16 @@ const AnalogQuestion = ({ onContributionSubmitted }: AnalogQuestionProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!response.trim()) return;
     
     setIsSubmitting(true);
     
-    // Add the entry to our local store
+    // Add the entry to Supabase
     try {
-      addManifestoEntry(response);
+      await addManifestoEntry(response);
       
       // Call the callback function if provided
       if (onContributionSubmitted) {

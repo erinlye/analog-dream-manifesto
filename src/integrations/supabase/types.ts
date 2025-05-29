@@ -68,6 +68,24 @@ export type Database = {
           },
         ]
       }
+      manifesto_entries: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       moderators: {
         Row: {
           created_at: string
