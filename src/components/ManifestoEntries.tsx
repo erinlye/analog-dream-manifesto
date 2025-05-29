@@ -7,7 +7,29 @@ const ManifestoEntries = () => {
   const [entries, setEntries] = useState<ManifestoEntry[]>([]);
 
   useEffect(() => {
-    setEntries(getManifestoEntries());
+    const loadEntries = () => {
+      setEntries(getManifestoEntries());
+    };
+
+    // Load initial entries
+    loadEntries();
+
+    // Listen for storage changes to update entries when new ones are added
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'analog-manifesto') {
+        loadEntries();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check for updates periodically in case storage event doesn't fire
+    const interval = setInterval(loadEntries, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
 
   if (entries.length === 0) {

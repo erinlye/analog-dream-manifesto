@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { addManifestoEntry } from '../lib/store';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../hooks/use-toast';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
+import PseudonymGenerator from './PseudonymGenerator';
 
 type AnalogQuestionProps = {
   onContributionSubmitted?: () => void;
@@ -12,6 +12,7 @@ type AnalogQuestionProps = {
 const AnalogQuestion = ({ onContributionSubmitted }: AnalogQuestionProps) => {
   const [response, setResponse] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPseudonymPrompt, setShowPseudonymPrompt] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -25,18 +26,21 @@ const AnalogQuestion = ({ onContributionSubmitted }: AnalogQuestionProps) => {
     // Add the entry to our local store
     try {
       addManifestoEntry(response);
-      toast({
-        title: "Thank you for your contribution",
-        description: "Your response has been added to our manifesto.",
-      });
       
       // Call the callback function if provided
       if (onContributionSubmitted) {
         onContributionSubmitted();
       }
       
-      // Navigate to manifesto page
-      navigate('/manifesto');
+      // Show pseudonym prompt instead of navigating immediately
+      setShowPseudonymPrompt(true);
+      setResponse(''); // Clear the form
+      
+      toast({
+        title: "Thank you for your contribution",
+        description: "Your response has been added to our manifesto. Now join our community!",
+      });
+      
     } catch (error) {
       console.error('Error saving response:', error);
       toast({
@@ -48,6 +52,34 @@ const AnalogQuestion = ({ onContributionSubmitted }: AnalogQuestionProps) => {
       setIsSubmitting(false);
     }
   };
+
+  const handlePseudonymSelect = (pseudonym: string) => {
+    // This will open the auth modal via the parent component
+    // Navigate to manifesto after pseudonym selection
+    setTimeout(() => {
+      navigate('/manifesto');
+    }, 100);
+  };
+
+  if (showPseudonymPrompt) {
+    return (
+      <div className="analog-paper animate-fade-in">
+        <h2 className="text-2xl mb-4 font-serif text-center">Welcome to our community!</h2>
+        <p className="text-center mb-6 text-ink-400">
+          Thank you for contributing to our manifesto. Now join our community with a unique pseudonym:
+        </p>
+        <PseudonymGenerator onSelect={handlePseudonymSelect} />
+        <div className="text-center mt-4">
+          <button 
+            onClick={() => navigate('/manifesto')}
+            className="analog-link text-sm"
+          >
+            Continue to manifesto
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="analog-paper animate-fade-in">
