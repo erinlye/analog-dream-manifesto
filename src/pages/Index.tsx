@@ -1,8 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import AnalogQuestion from '../components/AnalogQuestion';
-import PseudonymGenerator from '../components/PseudonymGenerator';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -109,10 +107,7 @@ const Index = () => {
             
             {/* Right column: Contribution form */}
             <div>
-              <PseudonymGenerator onSelect={handleOpenAuthModal} />
-              <div className="mt-8">
-                <AnalogQuestion onContributionSubmitted={handleContribution} />
-              </div>
+              <AnalogQuestion onContributionSubmitted={handleContribution} />
             </div>
           </div>
 
