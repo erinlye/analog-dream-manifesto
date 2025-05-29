@@ -5,6 +5,7 @@ import AnalogQuestion from '../components/AnalogQuestion';
 import PseudonymGenerator from '../components/PseudonymGenerator';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getManifestoEntries } from '../lib/store';
 import ManifestoEntries from '../components/ManifestoEntries';
 import AuthStatus from '../components/AuthStatus';
@@ -58,16 +59,43 @@ const Index = () => {
               we're building a platform to promote and communally learn how to live more analog lifestyles in our increasingly digital world.
             </p>
           </div>
-          
+
+          {/* Community Norms Section */}
           <div className="mb-12">
-            <h2 className="font-serif text-2xl mb-6 text-center">Our Manifesto: Reasons for Being Analog</h2>
-            <ManifestoEntries />
+            <Card className="analog-paper">
+              <CardHeader>
+                <CardTitle className="text-2xl font-serif text-center">community norms that keep analog abundant</CardTitle>
+              </CardHeader>
+              <CardContent className="prose prose-sm">
+                <p className="text-ink-400">
+                  support the diverse ways people are accessing analog living.
+                  <br />
+                  be creative and kind.
+                  <br />
+                  analog has zero tolerance for hate speech, hurtful language, sexual language or extortion, or any other online abuse. these accounts will be promptly removed from analog.
+                  <br />
+                  living analog is living a political life against the tech industry. we don't shy away from these healthy political conversations, but they need to happen with respect. debate ideas not people. do not be political in a way that does not support or relate to analog living.
+                  <br />
+                  do not post sexually explicit content on any forum site.
+                </p>
+              </CardContent>
+            </Card>
           </div>
           
-          <PseudonymGenerator onSelect={handleOpenAuthModal} />
-          
-          <div className="max-w-2xl mx-auto">
-            <AnalogQuestion onContributionSubmitted={handleContribution} />
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            {/* Left column: Manifesto */}
+            <div>
+              <h2 className="font-serif text-2xl mb-6 text-center">Our Manifesto: Reasons for Being Analog</h2>
+              <ManifestoEntries />
+            </div>
+            
+            {/* Right column: Contribution form */}
+            <div>
+              <PseudonymGenerator onSelect={handleOpenAuthModal} />
+              <div className="mt-8">
+                <AnalogQuestion onContributionSubmitted={handleContribution} />
+              </div>
+            </div>
           </div>
 
           <div className="mt-16 text-center">
