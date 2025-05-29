@@ -1,4 +1,3 @@
-
 import { useState, ChangeEvent } from 'react';
 import { useToast } from '../hooks/use-toast';
 import { Button } from './ui/button';
@@ -6,6 +5,7 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Image } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface NewForumPostFormProps {
   onPostAdded: () => void;
@@ -19,6 +19,7 @@ const NewForumPostForm = ({ onPostAdded, sectionName, addPost }: NewForumPostFor
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Convert the image file to a data URL
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +50,8 @@ const NewForumPostForm = ({ onPostAdded, sectionName, addPost }: NewForumPostFor
     
     setIsSubmitting(true);
     
-    const author = localStorage.getItem('userPseudonym') || 'anonymous_user';
+    // Get author from authenticated user or fallback to localStorage
+    const author = user?.user_metadata?.pseudonym || localStorage.getItem('userPseudonym') || 'anonymous_user';
     
     addPost({
       title,

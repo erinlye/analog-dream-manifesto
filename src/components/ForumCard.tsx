@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -11,6 +10,7 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import ModeratorControls from './ModeratorControls';
 import { Badge } from './ui/badge';
 import { isLoggedInAsModerator } from '../lib/moderatorStore';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Comment {
   id: string;
@@ -56,6 +56,7 @@ const ForumCard = ({
   const [commentText, setCommentText] = useState('');
   const [showComments, setShowComments] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Debug logging for the light phone community
   console.log('ForumCard - Post author:', post.author, 'Community:', communitySlug, 'Post ID:', post.id);
@@ -81,8 +82,11 @@ const ForumCard = ({
   const handleAddComment = () => {
     if (!commentText.trim()) return;
 
+    // Get author from authenticated user or fallback to localStorage
+    const author = user?.user_metadata?.pseudonym || localStorage.getItem('userPseudonym') || 'anonymous_user';
+
     onAddComment(post.id, {
-      author: localStorage.getItem('userPseudonym') || 'anonymous_user',
+      author,
       content: commentText
     });
     
@@ -124,7 +128,7 @@ const ForumCard = ({
             <CardTitle className="text-2xl mb-2">{post.title}</CardTitle>
             <CardDescription className="text-sm mb-2">
               Posted by{" "}
-              {post.author && post.author.trim() ? (
+              {post.author && post.author.trim() && post.author !== 'anonymous_user' ? (
                 <Link to={`/users/${post.author}`} className="hover:underline text-blue-600">
                   {post.author}
                 </Link>
