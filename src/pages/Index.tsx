@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import AnalogQuestion from '../components/AnalogQuestion';
@@ -11,8 +10,9 @@ import ManifestoEntries from '../components/ManifestoEntries';
 import AuthStatus from '../components/AuthStatus';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { User, LogIn, Settings } from 'lucide-react';
+import { User, LogIn, Settings, Monitor } from 'lucide-react';
 import AuthModal from '../components/AuthModal';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Index = () => {
   const [hasContributed, setHasContributed] = useState(false);
@@ -50,6 +50,18 @@ const Index = () => {
       <div className="flex justify-end p-2 bg-transparent">
         <AuthStatus />
       </div>
+      
+      {/* Desktop-only notice */}
+      <div className="analog-container pt-4">
+        <Alert className="analog-paper border-ink-200 mb-6">
+          <Monitor className="h-4 w-4" />
+          <AlertDescription className="text-ink-600">
+            <strong>Desktop experience:</strong> Our community is designed for desktop use only. 
+            We believe in creating spaces for meaningful sharing and connection, not endless mobile scrolling.
+          </AlertDescription>
+        </Alert>
+      </div>
+
       <Navigation isDisabled={!hasContributed} onDisabledClick={handleOpenDialog} />
       <main className="flex-1">
         <section className="analog-container py-16">
