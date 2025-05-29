@@ -57,6 +57,9 @@ const ForumCard = ({
   const [showComments, setShowComments] = useState(false);
   const { toast } = useToast();
 
+  // Debug logging for the light phone community
+  console.log('ForumCard - Post author:', post.author, 'Community:', communitySlug, 'Post ID:', post.id);
+
   const handleUpvote = () => {
     onUpvote(post.id);
     onUpdate();
@@ -121,9 +124,14 @@ const ForumCard = ({
             <CardTitle className="text-2xl mb-2">{post.title}</CardTitle>
             <CardDescription className="text-sm mb-2">
               Posted by{" "}
-              <Link to={`/users/${post.author}`} className="hover:underline">
-                {post.author}
-              </Link>{" "}
+              {post.author && post.author.trim() ? (
+                <Link to={`/users/${post.author}`} className="hover:underline text-blue-600">
+                  {post.author}
+                </Link>
+              ) : (
+                <span className="text-gray-500">Anonymous</span>
+              )}
+              {" "}
               {isModerator && (
                 <Badge variant="secondary" className="ml-1">
                   Mod
