@@ -1,5 +1,6 @@
+
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Navigation from '../components/Navigation';
 import { Community } from '../lib/types';
@@ -24,9 +25,8 @@ const CommunityDetail = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
-  const [posts, setPosts] = useState(() => {
-    return slug ? getCommunityPosts(slug) : [];
-  });
+  const [posts, setPosts] = useState([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
   // Fetch community details
   const { data: community, isLoading: loadingCommunity } = useQuery({
@@ -152,37 +152,50 @@ const CommunityDetail = () => {
     }
   };
 
-  const loadPosts = () => {
+  const loadPosts = async () => {
     if (!slug) return;
     
-    if (sortBy === 'recent') {
-      setPosts(getCommunityPosts(slug));
-    } else {
-      setPosts(getCommunityPostsByPopularity(slug));
+    setIsLoadingPosts(true);
+    try {
+      if (sortBy === 'recent') {
+        const loadedPosts = await getCommunityPosts(slug);
+        setPosts(loadedPosts);
+      } else {
+        const loadedPosts = await getCommunityPostsByPopularity(slug);
+        setPosts(loadedPosts);
+      }
+    } catch (error) {
+      console.error('Error loading posts:', error);
+    } finally {
+      setIsLoadingPosts(false);
     }
   };
+
+  useEffect(() => {
+    loadPosts();
+  }, [slug, sortBy]);
 
   const handlePostAdded = () => {
     loadPosts();
   };
 
-  const handleUpvote = (postId: string) => {
-    toggleCommunityUpvote(postId);
+  const handleUpvote = async (postId: string) => {
+    await toggleCommunityUpvote(postId);
     loadPosts();
   };
 
-  const handleDownvote = (postId: string) => {
-    toggleCommunityDownvote(postId);
+  const handleDownvote = async (postId: string) => {
+    await toggleCommunityDownvote(postId);
     loadPosts();
   };
 
-  const handleAddComment = (postId: string, comment: { author: string; content: string }) => {
-    addCommunityComment(postId, comment);
+  const handleAddComment = async (postId: string, comment: { author: string; content: string }) => {
+    await addCommunityComment(postId, comment);
     loadPosts();
   };
 
-  const handleDeletePost = (postId: string) => {
-    deleteCommunityPost(postId);
+  const handleDeletePost = async (postId: string) => {
+    await deleteCommunityPost(postId);
     loadPosts();
   };
 
@@ -238,20 +251,14 @@ const CommunityDetail = () => {
               <div className="space-x-2">
                 <Button 
                   variant={sortBy === 'recent' ? 'default' : 'outline'}
-                  onClick={() => {
-                    setSortBy('recent');
-                    loadPosts();
-                  }}
+                  onClick={() => setSortBy('recent')}
                   size="sm"
                 >
                   Recent
                 </Button>
                 <Button 
                   variant={sortBy === 'popular' ? 'default' : 'outline'}
-                  onClick={() => {
-                    setSortBy('popular');
-                    loadPosts();
-                  }}
+                  onClick={() => setSortBy('popular')}
                   size="sm"
                 >
                   Popular
@@ -266,32 +273,38 @@ const CommunityDetail = () => {
               />
             )}
             
-            <div className="space-y-6">
-              {posts.length > 0 ? (
-                posts.map(post => (
-                  <ForumCard 
-                    key={post.id} 
-                    post={post}
-                    onUpvote={handleUpvote}
-                    onDownvote={handleDownvote}
-                    onAddComment={handleAddComment}
-                    onDelete={handleDeletePost}
-                    onUpdate={loadPosts}
-                    resourceType="communityPost"
-                    communitySlug={slug}
-                  />
-                ))
-              ) : (
-                <div className="text-center py-10">
-                  <h3 className="text-lg font-serif mb-2">No Posts Yet</h3>
-                  {isMember ? (
-                    <p>Be the first to share a post with this community!</p>
-                  ) : (
-                    <p>Join this community to start posting.</p>
-                  )}
-                </div>
-              )}
-            </div>
+            {isLoadingPosts ? (
+              <div className="text-center py-10">
+                <p>Loading posts...</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {posts.length > 0 ? (
+                  posts.map(post => (
+                    <ForumCard 
+                      key={post.id} 
+                      post={post}
+                      onUpvote={handleUpvote}
+                      onDownvote={handleDownvote}
+                      onAddComment={handleAddComment}
+                      onDelete={handleDeletePost}
+                      onUpdate={loadPosts}
+                      resourceType="communityPost"
+                      communitySlug={slug}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-10">
+                    <h3 className="text-lg font-serif mb-2">No Posts Yet</h3>
+                    {isMember ? (
+                      <p>Be the first to share a post with this community!</p>
+                    ) : (
+                      <p>Join this community to start posting.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>

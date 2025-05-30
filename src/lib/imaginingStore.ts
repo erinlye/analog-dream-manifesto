@@ -1,145 +1,178 @@
 
+import { supabase } from '@/integrations/supabase/client';
 import { ImaginingPost, ImaginingComment } from "./types";
 
-// Key for localStorage
-const IMAGINING_POSTS_KEY = 'analog-imagining-posts';
-
-// Sample initial imagining posts
-const initialImaginingPosts: ImaginingPost[] = [
-  {
-    id: "1",
-    title: "A World Without Smartphones",
-    description: "What might our communities look like if smartphones were never invented? How would we communicate and organize?",
-    author: "future_thinker",
-    timestamp: Date.now() - 86400000 * 4, // 4 days ago
-    upvotes: 18,
-    downvotes: 1,
-    imageUrl: "https://images.unsplash.com/photo-1585241936939-be4099591252?w=500&auto=format",
-    comments: [
-      {
-        id: "c1",
-        author: "analog_dreamer",
-        content: "I think we'd have more face-to-face interactions and stronger local communities.",
-        timestamp: Date.now() - 86400000 * 3,
-      },
-      {
-        id: "c2",
-        author: "paper_writer",
-        content: "Letters would still be a major form of communication. I miss getting handwritten letters.",
-        timestamp: Date.now() - 86400000 * 2,
-      }
-    ]
-  },
-  {
-    id: "2",
-    title: "Technology That Enhances Rather Than Distracts",
-    description: "Let's imagine technology designed to deepen our presence rather than constantly pulling our attention away.",
-    author: "mindful_coder",
-    timestamp: Date.now() - 86400000 * 2, // 2 days ago
-    upvotes: 15,
-    downvotes: 0,
-    imageUrl: "https://images.unsplash.com/photo-1535957998253-26ae1ef29506?w=500&auto=format",
-    comments: [
-      {
-        id: "c3",
-        author: "slow_tech_enthusiast",
-        content: "I envision devices that become 'invisible' when not needed - no notifications, no presence except when summoned.",
-        timestamp: Date.now() - 86400000 * 1,
-      }
-    ]
-  }
-];
-
-// Initialize localStorage with sample data if empty
-const initializeLocalStorage = () => {
-  const existingPosts = localStorage.getItem(IMAGINING_POSTS_KEY);
-  if (!existingPosts) {
-    localStorage.setItem(IMAGINING_POSTS_KEY, JSON.stringify(initialImaginingPosts));
-  }
-};
-
-// Get all imagining posts from localStorage
-export const getAllImaginingPosts = (): ImaginingPost[] => {
-  initializeLocalStorage();
+// Get all imagining posts from Supabase
+export const getAllImaginingPosts = async (): Promise<ImaginingPost[]> => {
   try {
-    const posts = localStorage.getItem(IMAGINING_POSTS_KEY);
-    return posts ? JSON.parse(posts) : [];
+    const { data: posts, error: postsError } = await supabase
+      .from('imagining_posts')
+      .select('*')
+      .order('timestamp', { ascending: false });
+
+    if (postsError) throw postsError;
+
+    // Get comments for each post
+    const postsWithComments = await Promise.all(
+      (posts || []).map(async (post) => {
+        const { data: comments, error: commentsError } = await supabase
+          .from('imagining_comments')
+          .select('*')
+          .eq('post_id', post.id)
+          .order('timestamp', { ascending: true });
+
+        if (commentsError) throw commentsError;
+
+        return {
+          ...post,
+          imageUrl: post.image_url,
+          comments: comments || []
+        };
+      })
+    );
+
+    return postsWithComments;
   } catch (error) {
-    console.error('Error reading imagining posts:', error);
+    console.error('Error fetching imagining posts:', error);
     return [];
   }
 };
 
 // Get imagining posts sorted by popularity (upvotes - downvotes)
-export const getImaginingPostsByPopularity = (): ImaginingPost[] => {
-  return getAllImaginingPosts().sort((a, b) => 
-    (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)
-  );
-};
-
-// Save posts to localStorage
-const savePosts = (posts: ImaginingPost[]) => {
-  localStorage.setItem(IMAGINING_POSTS_KEY, JSON.stringify(posts));
+export const getImaginingPostsByPopularity = async (): Promise<ImaginingPost[]> => {
+  try {
+    const posts = await getAllImaginingPosts();
+    return posts.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+  } catch (error) {
+    console.error('Error fetching imagining posts by popularity:', error);
+    return [];
+  }
 };
 
 // Add a new imagining post
-export const addImaginingPost = (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): ImaginingPost => {
-  const posts = getAllImaginingPosts();
-  const newPost: ImaginingPost = {
-    ...post,
-    id: Date.now().toString(),
-    upvotes: 0,
-    downvotes: 0,
-    comments: []
-  };
-  const updatedPosts = [newPost, ...posts];
-  savePosts(updatedPosts);
-  return newPost;
+export const addImaginingPost = async (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<ImaginingPost | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('imagining_posts')
+      .insert([{
+        title: post.title,
+        description: post.description,
+        author: post.author,
+        timestamp: post.timestamp,
+        image_url: post.imageUrl
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return {
+      ...data,
+      imageUrl: data.image_url,
+      comments: []
+    };
+  } catch (error) {
+    console.error('Error adding imagining post:', error);
+    throw error;
+  }
 };
 
 // Delete an imagining post
-export const deleteImaginingPost = (postId: string): boolean => {
-  const posts = getAllImaginingPosts();
-  const updatedPosts = posts.filter(p => p.id !== postId);
-  savePosts(updatedPosts);
-  return updatedPosts.length < posts.length;
+export const deleteImaginingPost = async (postId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('imagining_posts')
+      .delete()
+      .eq('id', postId);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error deleting imagining post:', error);
+    return false;
+  }
 };
 
 // Add a comment to an imagining post
-export const addImaginingComment = (postId: string, comment: Omit<ImaginingComment, 'id' | 'timestamp'>): ImaginingComment | null => {
-  const posts = getAllImaginingPosts();
-  const postIndex = posts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+export const addImaginingComment = async (postId: string, comment: Omit<ImaginingComment, 'id' | 'timestamp'>): Promise<ImaginingComment | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('imagining_comments')
+      .insert([{
+        post_id: postId,
+        author: comment.author,
+        content: comment.content,
+        timestamp: Date.now()
+      }])
+      .select()
+      .single();
 
-  const newComment: ImaginingComment = {
-    ...comment,
-    id: `c${Date.now()}`,
-    timestamp: Date.now()
-  };
-
-  posts[postIndex].comments.push(newComment);
-  savePosts(posts);
-  return newComment;
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error adding imagining comment:', error);
+    return null;
+  }
 };
 
 // Toggle upvote on an imagining post
-export const toggleImaginingUpvote = (postId: string): ImaginingPost | null => {
-  const posts = getAllImaginingPosts();
-  const postIndex = posts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+export const toggleImaginingUpvote = async (postId: string): Promise<ImaginingPost | null> => {
+  try {
+    const { data: post, error: fetchError } = await supabase
+      .from('imagining_posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
 
-  posts[postIndex].upvotes += 1;
-  savePosts(posts);
-  return posts[postIndex];
+    if (fetchError) throw fetchError;
+
+    const { data: updatedPost, error: updateError } = await supabase
+      .from('imagining_posts')
+      .update({ upvotes: (post.upvotes || 0) + 1 })
+      .eq('id', postId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return {
+      ...updatedPost,
+      imageUrl: updatedPost.image_url,
+      comments: []
+    };
+  } catch (error) {
+    console.error('Error toggling imagining upvote:', error);
+    return null;
+  }
 };
 
 // Toggle downvote on an imagining post
-export const toggleImaginingDownvote = (postId: string): ImaginingPost | null => {
-  const posts = getAllImaginingPosts();
-  const postIndex = posts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+export const toggleImaginingDownvote = async (postId: string): Promise<ImaginingPost | null> => {
+  try {
+    const { data: post, error: fetchError } = await supabase
+      .from('imagining_posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
 
-  posts[postIndex].downvotes += 1;
-  savePosts(posts);
-  return posts[postIndex];
+    if (fetchError) throw fetchError;
+
+    const { data: updatedPost, error: updateError } = await supabase
+      .from('imagining_posts')
+      .update({ downvotes: (post.downvotes || 0) + 1 })
+      .eq('id', postId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return {
+      ...updatedPost,
+      imageUrl: updatedPost.image_url,
+      comments: []
+    };
+  } catch (error) {
+    console.error('Error toggling imagining downvote:', error);
+    return null;
+  }
 };

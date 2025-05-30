@@ -1,115 +1,178 @@
+
+import { supabase } from '@/integrations/supabase/client';
 import { OrganizingPost, OrganizingComment } from "./types";
 
-// Sample initial organizing posts
-const initialOrganizingPosts: OrganizingPost[] = [
-  {
-    id: "1",
-    title: "Library Technology Awareness Campaign",
-    description: "Let's organize an awareness campaign about the importance of public libraries in providing tech access to underserved communities.",
-    author: "library_advocate",
-    timestamp: Date.now() - 86400000 * 6, // 6 days ago
-    upvotes: 21,
-    downvotes: 1,
-    imageUrl: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=500&auto=format",
-    comments: [
-      {
-        id: "c1",
-        author: "community_builder",
-        content: "I work at a local library and would love to help organize this. We already have some programs in place.",
-        timestamp: Date.now() - 86400000 * 5,
-      },
-      {
-        id: "c2",
-        author: "digital_rights_advocate",
-        content: "We should also highlight how libraries promote digital literacy while respecting privacy.",
-        timestamp: Date.now() - 86400000 * 4,
-      }
-    ]
-  },
-  {
-    id: "2",
-    title: "Tech-Free Community Dinners",
-    description: "Let's organize monthly community dinners where all devices are checked at the door. A chance to connect without screens.",
-    author: "dinner_host",
-    timestamp: Date.now() - 86400000 * 3, // 3 days ago
-    upvotes: 14,
-    downvotes: 2,
-    imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&auto=format",
-    comments: [
-      {
-        id: "c3",
-        author: "local_chef",
-        content: "I'd be happy to volunteer my restaurant space for this once a month on Sundays when we're closed.",
-        timestamp: Date.now() - 86400000 * 2,
-      }
-    ]
+// Get all organizing posts from Supabase
+export const getAllOrganizingPosts = async (): Promise<OrganizingPost[]> => {
+  try {
+    const { data: posts, error: postsError } = await supabase
+      .from('organizing_posts')
+      .select('*')
+      .order('timestamp', { ascending: false });
+
+    if (postsError) throw postsError;
+
+    // Get comments for each post
+    const postsWithComments = await Promise.all(
+      (posts || []).map(async (post) => {
+        const { data: comments, error: commentsError } = await supabase
+          .from('organizing_comments')
+          .select('*')
+          .eq('post_id', post.id)
+          .order('timestamp', { ascending: true });
+
+        if (commentsError) throw commentsError;
+
+        return {
+          ...post,
+          imageUrl: post.image_url,
+          comments: comments || []
+        };
+      })
+    );
+
+    return postsWithComments;
+  } catch (error) {
+    console.error('Error fetching organizing posts:', error);
+    return [];
   }
-];
-
-// In-memory store of organizing posts
-let organizingPosts = [...initialOrganizingPosts];
-
-// Get all organizing posts
-export const getAllOrganizingPosts = (): OrganizingPost[] => {
-  return [...organizingPosts].sort((a, b) => b.timestamp - a.timestamp);
 };
 
 // Get organizing posts sorted by popularity (upvotes - downvotes)
-export const getOrganizingPostsByPopularity = (): OrganizingPost[] => {
-  return [...organizingPosts].sort((a, b) => 
-    (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)
-  );
+export const getOrganizingPostsByPopularity = async (): Promise<OrganizingPost[]> => {
+  try {
+    const posts = await getAllOrganizingPosts();
+    return posts.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+  } catch (error) {
+    console.error('Error fetching organizing posts by popularity:', error);
+    return [];
+  }
 };
 
 // Add a new organizing post
-export const addOrganizingPost = (post: Omit<OrganizingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): OrganizingPost => {
-  const newPost: OrganizingPost = {
-    ...post,
-    id: Date.now().toString(),
-    upvotes: 0,
-    downvotes: 0,
-    comments: []
-  };
-  organizingPosts = [newPost, ...organizingPosts];
-  return newPost;
+export const addOrganizingPost = async (post: Omit<OrganizingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<OrganizingPost | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('organizing_posts')
+      .insert([{
+        title: post.title,
+        description: post.description,
+        author: post.author,
+        timestamp: post.timestamp,
+        image_url: post.imageUrl
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return {
+      ...data,
+      imageUrl: data.image_url,
+      comments: []
+    };
+  } catch (error) {
+    console.error('Error adding organizing post:', error);
+    throw error;
+  }
 };
 
 // Delete an organizing post
-export const deleteOrganizingPost = (postId: string): boolean => {
-  const initialLength = organizingPosts.length;
-  organizingPosts = organizingPosts.filter(p => p.id !== postId);
-  return organizingPosts.length < initialLength;
+export const deleteOrganizingPost = async (postId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('organizing_posts')
+      .delete()
+      .eq('id', postId);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error deleting organizing post:', error);
+    return false;
+  }
 };
 
 // Add a comment to an organizing post
-export const addOrganizingComment = (postId: string, comment: Omit<OrganizingComment, 'id' | 'timestamp'>): OrganizingComment | null => {
-  const postIndex = organizingPosts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+export const addOrganizingComment = async (postId: string, comment: Omit<OrganizingComment, 'id' | 'timestamp'>): Promise<OrganizingComment | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('organizing_comments')
+      .insert([{
+        post_id: postId,
+        author: comment.author,
+        content: comment.content,
+        timestamp: Date.now()
+      }])
+      .select()
+      .single();
 
-  const newComment: OrganizingComment = {
-    ...comment,
-    id: `c${Date.now()}`,
-    timestamp: Date.now()
-  };
-
-  organizingPosts[postIndex].comments.push(newComment);
-  return newComment;
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error adding organizing comment:', error);
+    return null;
+  }
 };
 
 // Toggle upvote on an organizing post
-export const toggleOrganizingUpvote = (postId: string): OrganizingPost | null => {
-  const postIndex = organizingPosts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+export const toggleOrganizingUpvote = async (postId: string): Promise<OrganizingPost | null> => {
+  try {
+    const { data: post, error: fetchError } = await supabase
+      .from('organizing_posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
 
-  organizingPosts[postIndex].upvotes += 1;
-  return organizingPosts[postIndex];
+    if (fetchError) throw fetchError;
+
+    const { data: updatedPost, error: updateError } = await supabase
+      .from('organizing_posts')
+      .update({ upvotes: (post.upvotes || 0) + 1 })
+      .eq('id', postId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return {
+      ...updatedPost,
+      imageUrl: updatedPost.image_url,
+      comments: []
+    };
+  } catch (error) {
+    console.error('Error toggling organizing upvote:', error);
+    return null;
+  }
 };
 
 // Toggle downvote on an organizing post
-export const toggleOrganizingDownvote = (postId: string): OrganizingPost | null => {
-  const postIndex = organizingPosts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+export const toggleOrganizingDownvote = async (postId: string): Promise<OrganizingPost | null> => {
+  try {
+    const { data: post, error: fetchError } = await supabase
+      .from('organizing_posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
 
-  organizingPosts[postIndex].downvotes += 1;
-  return organizingPosts[postIndex];
+    if (fetchError) throw fetchError;
+
+    const { data: updatedPost, error: updateError } = await supabase
+      .from('organizing_posts')
+      .update({ downvotes: (post.downvotes || 0) + 1 })
+      .eq('id', postId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return {
+      ...updatedPost,
+      imageUrl: updatedPost.image_url,
+      comments: []
+    };
+  } catch (error) {
+    console.error('Error toggling organizing downvote:', error);
+    return null;
+  }
 };

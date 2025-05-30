@@ -11,12 +11,22 @@ import { Button } from '../components/ui/button';
 const Learning = () => {
   const [posts, setPosts] = useState<LearningPost[]>([]);
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
+  const [isLoading, setIsLoading] = useState(true);
   
-  const loadPosts = () => {
-    if (sortBy === 'recent') {
-      setPosts(getAllLearningPosts());
-    } else {
-      setPosts(getLearningPostsByPopularity());
+  const loadPosts = async () => {
+    setIsLoading(true);
+    try {
+      if (sortBy === 'recent') {
+        const loadedPosts = await getAllLearningPosts();
+        setPosts(loadedPosts);
+      } else {
+        const loadedPosts = await getLearningPostsByPopularity();
+        setPosts(loadedPosts);
+      }
+    } catch (error) {
+      console.error('Error loading posts:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -62,27 +72,33 @@ const Learning = () => {
             addPost={addLearningPost} 
           />
           
-          <div className="space-y-6">
-            {posts.length > 0 ? (
-              posts.map(post => (
-                <ForumCard 
-                  key={post.id} 
-                  post={post} 
-                  onUpvote={toggleLearningUpvote} 
-                  onDownvote={toggleLearningDownvote}
-                  onAddComment={addLearningComment}
-                  onDelete={deleteLearningPost}
-                  onUpdate={loadPosts}
-                  resourceType="learningPost"
-                />
-              ))
-            ) : (
-              <div className="analog-paper text-center py-10">
-                <h2 className="text-xl font-serif mb-4">No Learning Posts Yet</h2>
-                <p>Be the first to share a question or insight with the community!</p>
-              </div>
-            )}
-          </div>
+          {isLoading ? (
+            <div className="analog-paper text-center py-10">
+              <p>Loading posts...</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {posts.length > 0 ? (
+                posts.map(post => (
+                  <ForumCard 
+                    key={post.id} 
+                    post={post} 
+                    onUpvote={toggleLearningUpvote} 
+                    onDownvote={toggleLearningDownvote}
+                    onAddComment={addLearningComment}
+                    onDelete={deleteLearningPost}
+                    onUpdate={loadPosts}
+                    resourceType="learningPost"
+                  />
+                ))
+              ) : (
+                <div className="analog-paper text-center py-10">
+                  <h2 className="text-xl font-serif mb-4">No Learning Posts Yet</h2>
+                  <p>Be the first to share a question or insight with the community!</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
       <footer className="border-t border-paper-300/40 py-8 mt-16">

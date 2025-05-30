@@ -11,12 +11,22 @@ import { Button } from '../components/ui/button';
 const Imagining = () => {
   const [posts, setPosts] = useState<ImaginingPost[]>([]);
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
+  const [isLoading, setIsLoading] = useState(true);
   
-  const loadPosts = () => {
-    if (sortBy === 'recent') {
-      setPosts(getAllImaginingPosts());
-    } else {
-      setPosts(getImaginingPostsByPopularity());
+  const loadPosts = async () => {
+    setIsLoading(true);
+    try {
+      if (sortBy === 'recent') {
+        const loadedPosts = await getAllImaginingPosts();
+        setPosts(loadedPosts);
+      } else {
+        const loadedPosts = await getImaginingPostsByPopularity();
+        setPosts(loadedPosts);
+      }
+    } catch (error) {
+      console.error('Error loading posts:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -62,27 +72,33 @@ const Imagining = () => {
             addPost={addImaginingPost} 
           />
           
-          <div className="space-y-6">
-            {posts.length > 0 ? (
-              posts.map(post => (
-                <ForumCard 
-                  key={post.id} 
-                  post={post} 
-                  onUpvote={toggleImaginingUpvote} 
-                  onDownvote={toggleImaginingDownvote}
-                  onAddComment={addImaginingComment}
-                  onDelete={deleteImaginingPost}
-                  onUpdate={loadPosts}
-                  resourceType="imaginingPost"
-                />
-              ))
-            ) : (
-              <div className="analog-paper text-center py-10">
-                <h2 className="text-xl font-serif mb-4">No Imagining Posts Yet</h2>
-                <p>Be the first to share your vision for better technology!</p>
-              </div>
-            )}
-          </div>
+          {isLoading ? (
+            <div className="analog-paper text-center py-10">
+              <p>Loading posts...</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {posts.length > 0 ? (
+                posts.map(post => (
+                  <ForumCard 
+                    key={post.id} 
+                    post={post} 
+                    onUpvote={toggleImaginingUpvote} 
+                    onDownvote={toggleImaginingDownvote}
+                    onAddComment={addImaginingComment}
+                    onDelete={deleteImaginingPost}
+                    onUpdate={loadPosts}
+                    resourceType="imaginingPost"
+                  />
+                ))
+              ) : (
+                <div className="analog-paper text-center py-10">
+                  <h2 className="text-xl font-serif mb-4">No Imagining Posts Yet</h2>
+                  <p>Be the first to share your vision for better technology!</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
       <footer className="border-t border-paper-300/40 py-8 mt-16">

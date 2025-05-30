@@ -39,6 +39,41 @@ export type Database = {
         }
         Relationships: []
       }
+      community_comments: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          timestamp: number
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          timestamp: number
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          timestamp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_members: {
         Row: {
           community_id: string
@@ -67,6 +102,195 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      community_posts: {
+        Row: {
+          author: string
+          community_id: string
+          created_at: string
+          description: string
+          downvotes: number
+          id: string
+          image_url: string | null
+          timestamp: number
+          title: string
+          upvotes: number
+        }
+        Insert: {
+          author: string
+          community_id: string
+          created_at?: string
+          description: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp: number
+          title: string
+          upvotes?: number
+        }
+        Update: {
+          author?: string
+          community_id?: string
+          created_at?: string
+          description?: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp?: number
+          title?: string
+          upvotes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      imagining_comments: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          timestamp: number
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          timestamp: number
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          timestamp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imagining_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "imagining_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      imagining_posts: {
+        Row: {
+          author: string
+          created_at: string
+          description: string
+          downvotes: number
+          id: string
+          image_url: string | null
+          timestamp: number
+          title: string
+          upvotes: number
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          description: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp: number
+          title: string
+          upvotes?: number
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          description?: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp?: number
+          title?: string
+          upvotes?: number
+        }
+        Relationships: []
+      }
+      learning_comments: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          timestamp: number
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          timestamp: number
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          timestamp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "learning_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_posts: {
+        Row: {
+          author: string
+          created_at: string
+          description: string
+          downvotes: number
+          id: string
+          image_url: string | null
+          timestamp: number
+          title: string
+          upvotes: number
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          description: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp: number
+          title: string
+          upvotes?: number
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          description?: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp?: number
+          title?: string
+          upvotes?: number
+        }
+        Relationships: []
       }
       manifesto_entries: {
         Row: {
@@ -101,6 +325,77 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+        }
+        Relationships: []
+      }
+      organizing_comments: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          timestamp: number
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          timestamp: number
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          timestamp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizing_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "organizing_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizing_posts: {
+        Row: {
+          author: string
+          created_at: string
+          description: string
+          downvotes: number
+          id: string
+          image_url: string | null
+          timestamp: number
+          title: string
+          upvotes: number
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          description: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp: number
+          title: string
+          upvotes?: number
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          description?: string
+          downvotes?: number
+          id?: string
+          image_url?: string | null
+          timestamp?: number
+          title?: string
+          upvotes?: number
         }
         Relationships: []
       }
