@@ -221,6 +221,11 @@ const CommunityDetail = () => {
     );
   }
 
+  console.log('Debug - User:', user);
+  console.log('Debug - Is Member:', isMember);
+  console.log('Debug - Loading Membership:', loadingMembership);
+  console.log('Debug - Community slug:', slug);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -266,11 +271,28 @@ const CommunityDetail = () => {
               </div>
             </div>
             
-            {isMember && slug && (
-              <NewCommunityPostForm 
-                communityId={slug} 
-                onPostAdded={handlePostAdded} 
-              />
+            {/* Always show the form if user is logged in and a member */}
+            {user && isMember && slug && (
+              <div className="mb-6">
+                <NewCommunityPostForm 
+                  communityId={slug} 
+                  onPostAdded={handlePostAdded} 
+                />
+              </div>
+            )}
+
+            {/* Show message if user is not logged in */}
+            {!user && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg text-center">
+                <p className="text-gray-600">Please log in to create posts in this community.</p>
+              </div>
+            )}
+
+            {/* Show message if user is logged in but not a member */}
+            {user && !loadingMembership && !isMember && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg text-center">
+                <p className="text-gray-600">Join this community to start posting and participating in discussions.</p>
+              </div>
             )}
             
             {isLoadingPosts ? (
