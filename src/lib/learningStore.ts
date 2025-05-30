@@ -50,7 +50,7 @@ export const getLearningPostsByPopularity = async (): Promise<LearningPost[]> =>
 };
 
 // Add a new learning post
-export const addLearningPost = async (post: Omit<LearningPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<LearningPost | null> => {
+export const addLearningPost = async (post: Omit<LearningPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<LearningPost> => {
   try {
     const { data, error } = await supabase
       .from('learning_posts')
@@ -94,85 +94,66 @@ export const deleteLearningPost = async (postId: string): Promise<boolean> => {
 };
 
 // Add a comment to a learning post
-export const addLearningComment = async (postId: string, comment: Omit<LearningComment, 'id' | 'timestamp'>): Promise<LearningComment | null> => {
+export const addLearningComment = async (postId: string, comment: Omit<LearningComment, 'id' | 'timestamp'>): Promise<void> => {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('learning_comments')
       .insert([{
         post_id: postId,
         author: comment.author,
         content: comment.content,
         timestamp: Date.now()
-      }])
-      .select()
-      .single();
+      }]);
 
     if (error) throw error;
-    return data;
   } catch (error) {
     console.error('Error adding learning comment:', error);
-    return null;
+    throw error;
   }
 };
 
 // Toggle upvote on a learning post
-export const toggleLearningUpvote = async (postId: string): Promise<LearningPost | null> => {
+export const toggleLearningUpvote = async (postId: string): Promise<void> => {
   try {
     const { data: post, error: fetchError } = await supabase
       .from('learning_posts')
-      .select('*')
+      .select('upvotes')
       .eq('id', postId)
       .single();
 
     if (fetchError) throw fetchError;
 
-    const { data: updatedPost, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('learning_posts')
       .update({ upvotes: (post.upvotes || 0) + 1 })
-      .eq('id', postId)
-      .select()
-      .single();
+      .eq('id', postId);
 
     if (updateError) throw updateError;
-
-    return {
-      ...updatedPost,
-      imageUrl: updatedPost.image_url,
-      comments: []
-    };
   } catch (error) {
     console.error('Error toggling learning upvote:', error);
-    return null;
+    throw error;
   }
 };
 
 // Toggle downvote on a learning post
-export const toggleLearningDownvote = async (postId: string): Promise<LearningPost | null> => {
+export const toggleLearningDownvote = async (postId: string): Promise<void> => {
   try {
     const { data: post, error: fetchError } = await supabase
       .from('learning_posts')
-      .select('*')
+      .select('downvotes')
       .eq('id', postId)
       .single();
 
     if (fetchError) throw fetchError;
 
-    const { data: updatedPost, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('learning_posts')
       .update({ downvotes: (post.downvotes || 0) + 1 })
-      .eq('id', postId)
-      .select()
-      .single();
+      .eq('id', postId);
 
     if (updateError) throw updateError;
-
-    return {
-      ...updatedPost,
-      imageUrl: updatedPost.image_url,
-      comments: []
-    };
   } catch (error) {
     console.error('Error toggling learning downvote:', error);
-    return null;
+    throw error;
   }
 };

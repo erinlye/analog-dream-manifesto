@@ -50,7 +50,7 @@ export const getOrganizingPostsByPopularity = async (): Promise<OrganizingPost[]
 };
 
 // Add a new organizing post
-export const addOrganizingPost = async (post: Omit<OrganizingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<OrganizingPost | null> => {
+export const addOrganizingPost = async (post: Omit<OrganizingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<OrganizingPost> => {
   try {
     const { data, error } = await supabase
       .from('organizing_posts')
@@ -94,85 +94,66 @@ export const deleteOrganizingPost = async (postId: string): Promise<boolean> => 
 };
 
 // Add a comment to an organizing post
-export const addOrganizingComment = async (postId: string, comment: Omit<OrganizingComment, 'id' | 'timestamp'>): Promise<OrganizingComment | null> => {
+export const addOrganizingComment = async (postId: string, comment: Omit<OrganizingComment, 'id' | 'timestamp'>): Promise<void> => {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('organizing_comments')
       .insert([{
         post_id: postId,
         author: comment.author,
         content: comment.content,
         timestamp: Date.now()
-      }])
-      .select()
-      .single();
+      }]);
 
     if (error) throw error;
-    return data;
   } catch (error) {
     console.error('Error adding organizing comment:', error);
-    return null;
+    throw error;
   }
 };
 
 // Toggle upvote on an organizing post
-export const toggleOrganizingUpvote = async (postId: string): Promise<OrganizingPost | null> => {
+export const toggleOrganizingUpvote = async (postId: string): Promise<void> => {
   try {
     const { data: post, error: fetchError } = await supabase
       .from('organizing_posts')
-      .select('*')
+      .select('upvotes')
       .eq('id', postId)
       .single();
 
     if (fetchError) throw fetchError;
 
-    const { data: updatedPost, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('organizing_posts')
       .update({ upvotes: (post.upvotes || 0) + 1 })
-      .eq('id', postId)
-      .select()
-      .single();
+      .eq('id', postId);
 
     if (updateError) throw updateError;
-
-    return {
-      ...updatedPost,
-      imageUrl: updatedPost.image_url,
-      comments: []
-    };
   } catch (error) {
     console.error('Error toggling organizing upvote:', error);
-    return null;
+    throw error;
   }
 };
 
 // Toggle downvote on an organizing post
-export const toggleOrganizingDownvote = async (postId: string): Promise<OrganizingPost | null> => {
+export const toggleOrganizingDownvote = async (postId: string): Promise<void> => {
   try {
     const { data: post, error: fetchError } = await supabase
       .from('organizing_posts')
-      .select('*')
+      .select('downvotes')
       .eq('id', postId)
       .single();
 
     if (fetchError) throw fetchError;
 
-    const { data: updatedPost, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('organizing_posts')
       .update({ downvotes: (post.downvotes || 0) + 1 })
-      .eq('id', postId)
-      .select()
-      .single();
+      .eq('id', postId);
 
     if (updateError) throw updateError;
-
-    return {
-      ...updatedPost,
-      imageUrl: updatedPost.image_url,
-      comments: []
-    };
   } catch (error) {
     console.error('Error toggling organizing downvote:', error);
-    return null;
+    throw error;
   }
 };

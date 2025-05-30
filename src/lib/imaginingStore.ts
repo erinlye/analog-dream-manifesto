@@ -50,7 +50,7 @@ export const getImaginingPostsByPopularity = async (): Promise<ImaginingPost[]> 
 };
 
 // Add a new imagining post
-export const addImaginingPost = async (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<ImaginingPost | null> => {
+export const addImaginingPost = async (post: Omit<ImaginingPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<ImaginingPost> => {
   try {
     const { data, error } = await supabase
       .from('imagining_posts')
@@ -94,85 +94,66 @@ export const deleteImaginingPost = async (postId: string): Promise<boolean> => {
 };
 
 // Add a comment to an imagining post
-export const addImaginingComment = async (postId: string, comment: Omit<ImaginingComment, 'id' | 'timestamp'>): Promise<ImaginingComment | null> => {
+export const addImaginingComment = async (postId: string, comment: Omit<ImaginingComment, 'id' | 'timestamp'>): Promise<void> => {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('imagining_comments')
       .insert([{
         post_id: postId,
         author: comment.author,
         content: comment.content,
         timestamp: Date.now()
-      }])
-      .select()
-      .single();
+      }]);
 
     if (error) throw error;
-    return data;
   } catch (error) {
     console.error('Error adding imagining comment:', error);
-    return null;
+    throw error;
   }
 };
 
 // Toggle upvote on an imagining post
-export const toggleImaginingUpvote = async (postId: string): Promise<ImaginingPost | null> => {
+export const toggleImaginingUpvote = async (postId: string): Promise<void> => {
   try {
     const { data: post, error: fetchError } = await supabase
       .from('imagining_posts')
-      .select('*')
+      .select('upvotes')
       .eq('id', postId)
       .single();
 
     if (fetchError) throw fetchError;
 
-    const { data: updatedPost, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('imagining_posts')
       .update({ upvotes: (post.upvotes || 0) + 1 })
-      .eq('id', postId)
-      .select()
-      .single();
+      .eq('id', postId);
 
     if (updateError) throw updateError;
-
-    return {
-      ...updatedPost,
-      imageUrl: updatedPost.image_url,
-      comments: []
-    };
   } catch (error) {
     console.error('Error toggling imagining upvote:', error);
-    return null;
+    throw error;
   }
 };
 
 // Toggle downvote on an imagining post
-export const toggleImaginingDownvote = async (postId: string): Promise<ImaginingPost | null> => {
+export const toggleImaginingDownvote = async (postId: string): Promise<void> => {
   try {
     const { data: post, error: fetchError } = await supabase
       .from('imagining_posts')
-      .select('*')
+      .select('downvotes')
       .eq('id', postId)
       .single();
 
     if (fetchError) throw fetchError;
 
-    const { data: updatedPost, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('imagining_posts')
       .update({ downvotes: (post.downvotes || 0) + 1 })
-      .eq('id', postId)
-      .select()
-      .single();
+      .eq('id', postId);
 
     if (updateError) throw updateError;
-
-    return {
-      ...updatedPost,
-      imageUrl: updatedPost.image_url,
-      comments: []
-    };
   } catch (error) {
     console.error('Error toggling imagining downvote:', error);
-    return null;
+    throw error;
   }
 };

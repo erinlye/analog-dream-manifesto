@@ -1,3 +1,4 @@
+
 import { useState, ChangeEvent } from 'react';
 import { useToast } from '../hooks/use-toast';
 import { Button } from './ui/button';
@@ -10,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 interface NewForumPostFormProps {
   onPostAdded: () => void;
   sectionName: string;
-  addPost: (post: any) => any;
+  addPost: (post: any) => Promise<any>;
 }
 
 const NewForumPostForm = ({ onPostAdded, sectionName, addPost }: NewForumPostFormProps) => {
@@ -43,35 +44,45 @@ const NewForumPostForm = ({ onPostAdded, sectionName, addPost }: NewForumPostFor
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title.trim() || !description.trim()) return;
     
     setIsSubmitting(true);
     
-    // Get author from authenticated user or fallback to localStorage
-    const author = user?.user_metadata?.pseudonym || localStorage.getItem('userPseudonym') || 'anonymous_user';
-    
-    addPost({
-      title,
-      description,
-      author,
-      timestamp: Date.now(),
-      imageUrl: imageUrl || undefined,
-    });
-    
-    setTitle('');
-    setDescription('');
-    setImageUrl('');
-    setIsSubmitting(false);
-    
-    onPostAdded();
-    
-    toast({
-      title: "Post shared",
-      description: `Your ${sectionName.toLowerCase()} post has been successfully shared with the community.`
-    });
+    try {
+      // Get author from authenticated user or fallback to localStorage
+      const author = user?.user_metadata?.pseudonym || localStorage.getItem('userPseudonym') || 'anonymous_user';
+      
+      await addPost({
+        title,
+        description,
+        author,
+        timestamp: Date.now(),
+        imageUrl: imageUrl || undefined,
+      });
+      
+      setTitle('');
+      setDescription('');
+      setImageUrl('');
+      
+      onPostAdded();
+      
+      toast({
+        title: "Post shared",
+        description: `Your ${sectionName.toLowerCase()} post has been successfully shared with the community.`
+      });
+    } catch (error) {
+      console.error('Error adding post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to share your post. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
