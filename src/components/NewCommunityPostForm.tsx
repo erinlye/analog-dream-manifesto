@@ -1,15 +1,14 @@
-import { useState, ChangeEvent } from 'react';
-import { useToast } from '../hooks/use-toast';
+
+import { useState } from 'react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { Image } from 'lucide-react';
+import { Input } from './ui/input';
+import { useToast } from '../hooks/use-toast';
 import { addCommunityPost } from '../lib/communityPostStore';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface NewCommunityPostFormProps {
-  communityId: string;
+  communityId: string; // This is actually the community slug
   onPostAdded: () => void;
 }
 
@@ -21,132 +20,97 @@ const NewCommunityPostForm = ({ communityId, onPostAdded }: NewCommunityPostForm
   const { toast } = useToast();
   const { user } = useAuth();
 
-  // Convert the image file to a data URL
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Check file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!title.trim() || !description.trim()) {
       toast({
         title: "Error",
-        description: "Image too large. Please choose an image under 5MB.",
+        description: "Please fill in both title and description",
         variant: "destructive"
       });
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setImageUrl(event.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!title.trim() || !description.trim()) return;
-    
     setIsSubmitting(true);
-    
-    // Get author from authenticated user or fallback to localStorage
-    const author = user?.user_metadata?.pseudonym || localStorage.getItem('userPseudonym') || 'anonymous_user';
-    
-    addCommunityPost({
-      communityId,
-      title,
-      description,
-      author,
-      timestamp: Date.now(),
-      imageUrl: imageUrl || undefined,
-    });
-    
-    setTitle('');
-    setDescription('');
-    setImageUrl('');
-    setIsSubmitting(false);
-    
-    onPostAdded();
-    
-    toast({
-      title: "Post shared",
-      description: "Your post has been successfully shared with the community."
-    });
+
+    try {
+      // Get author from authenticated user or fallback to localStorage
+      const author = user?.user_metadata?.pseudonym || localStorage.getItem('userPseudonym') || 'anonymous_user';
+
+      await addCommunityPost({
+        communityId, // This is the community slug
+        title: title.trim(),
+        description: description.trim(),
+        author,
+        timestamp: Date.now(),
+        imageUrl: imageUrl.trim() || undefined
+      });
+
+      setTitle('');
+      setDescription('');
+      setImageUrl('');
+      onPostAdded();
+      
+      toast({
+        title: "Success",
+        description: "Your post has been added to the community!"
+      });
+    } catch (error) {
+      console.error('Error adding community post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add post. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <Card className="analog-paper mb-8">
-      <CardHeader>
-        <CardTitle className="text-xl">Share a Post</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Post title"
-              className="analog-input mb-2"
-              required
-            />
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="What's on your mind?"
-              className="analog-input h-24 mb-2"
-              required
-            />
-            
-            <div className="mb-2">
-              <label className="block text-sm font-medium mb-1">Add a photo (optional)</label>
-              <div className="flex items-center">
-                <label className="cursor-pointer flex items-center justify-center border border-dashed border-gray-300 rounded-md p-4 w-full hover:bg-gray-50 transition-colors">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    className="hidden" 
-                    onChange={handleImageChange}
-                  />
-                  <div className="text-center">
-                    <Image className="mx-auto h-6 w-6 text-gray-400" />
-                    <span className="mt-2 block text-sm text-gray-600">
-                      {imageUrl ? "Change photo" : "Upload a photo"}
-                    </span>
-                  </div>
-                </label>
-              </div>
-            </div>
-            
-            {imageUrl && (
-              <div className="mt-2 relative">
-                <img 
-                  src={imageUrl} 
-                  alt="Post preview" 
-                  className="w-full h-auto max-h-48 object-cover rounded-md"
-                />
-                <button 
-                  type="button" 
-                  className="absolute top-2 right-2 bg-black/50 rounded-full p-1 text-white hover:bg-black/70"
-                  onClick={() => setImageUrl('')}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            )}
-          </div>
-          <Button 
-            type="submit" 
-            className="analog-button w-full"
-            disabled={isSubmitting || !title.trim() || !description.trim()}
-          >
-            {isSubmitting ? 'Sharing...' : 'Share Post'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="analog-paper p-6 mb-6">
+      <h3 className="text-xl font-serif mb-4">Share with the Community</h3>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Input
+            placeholder="Post title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="analog-input"
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        <div>
+          <Textarea
+            placeholder="What would you like to share with this community?"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="analog-input min-h-[100px]"
+            disabled={isSubmitting}
+          />
+        </div>
+
+        <div>
+          <Input
+            placeholder="Image URL (optional)"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            className="analog-input"
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        <Button 
+          type="submit" 
+          className="analog-button"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Posting...' : 'Post to Community'}
+        </Button>
+      </form>
+    </div>
   );
 };
 

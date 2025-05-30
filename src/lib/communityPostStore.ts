@@ -2,13 +2,22 @@
 import { supabase } from '@/integrations/supabase/client';
 import { CommunityPost, CommunityComment } from './types';
 
-// Get all posts for a specific community
-export const getCommunityPosts = async (communityId: string): Promise<CommunityPost[]> => {
+// Get all posts for a specific community by slug
+export const getCommunityPosts = async (communitySlug: string): Promise<CommunityPost[]> => {
   try {
+    // First get the community ID from the slug
+    const { data: community, error: communityError } = await supabase
+      .from('communities')
+      .select('id')
+      .eq('slug', communitySlug)
+      .single();
+
+    if (communityError) throw communityError;
+
     const { data: posts, error: postsError } = await supabase
       .from('community_posts')
       .select('*')
-      .eq('community_id', communityId)
+      .eq('community_id', community.id)
       .order('timestamp', { ascending: false });
 
     if (postsError) throw postsError;
@@ -74,10 +83,19 @@ export const getCommunityPostById = async (postId: string): Promise<CommunityPos
 // Add a new post
 export const addCommunityPost = async (post: Omit<CommunityPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<CommunityPost | null> => {
   try {
+    // Get community ID from slug
+    const { data: community, error: communityError } = await supabase
+      .from('communities')
+      .select('id')
+      .eq('slug', post.communityId)
+      .single();
+
+    if (communityError) throw communityError;
+
     const { data, error } = await supabase
       .from('community_posts')
       .insert([{
-        community_id: post.communityId,
+        community_id: community.id,
         title: post.title,
         description: post.description,
         author: post.author,
@@ -182,9 +200,9 @@ export const toggleCommunityDownvote = async (postId: string): Promise<void> => 
 };
 
 // Get posts sorted by popularity (upvotes - downvotes)
-export const getCommunityPostsByPopularity = async (communityId: string): Promise<CommunityPost[]> => {
+export const getCommunityPostsByPopularity = async (communitySlug: string): Promise<CommunityPost[]> => {
   try {
-    const posts = await getCommunityPosts(communityId);
+    const posts = await getCommunityPosts(communitySlug);
     return posts.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
   } catch (error) {
     console.error('Error fetching posts by popularity:', error);
