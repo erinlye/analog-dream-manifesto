@@ -1,3 +1,4 @@
+
 import { PlugPost, PlugComment } from "./types";
 
 // Sample initial plug posts
@@ -50,19 +51,19 @@ const initialPlugPosts: PlugPost[] = [
 let plugPosts = [...initialPlugPosts];
 
 // Get all plug posts
-export const getAllPlugPosts = (): PlugPost[] => {
+export const getAllPlugPosts = async (): Promise<PlugPost[]> => {
   return [...plugPosts].sort((a, b) => b.timestamp - a.timestamp);
 };
 
 // Get plug posts sorted by popularity (upvotes - downvotes)
-export const getPlugPostsByPopularity = (): PlugPost[] => {
+export const getPlugPostsByPopularity = async (): Promise<PlugPost[]> => {
   return [...plugPosts].sort((a, b) => 
     (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)
   );
 };
 
 // Add a new plug post
-export const addPlugPost = (post: Omit<PlugPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): PlugPost => {
+export const addPlugPost = async (post: Omit<PlugPost, 'id' | 'upvotes' | 'downvotes' | 'comments'>): Promise<PlugPost> => {
   const newPost: PlugPost = {
     ...post,
     id: Date.now().toString(),
@@ -75,16 +76,16 @@ export const addPlugPost = (post: Omit<PlugPost, 'id' | 'upvotes' | 'downvotes' 
 };
 
 // Delete a plug post
-export const deletePlugPost = (postId: string): boolean => {
+export const deletePlugPost = async (postId: string): Promise<boolean> => {
   const initialLength = plugPosts.length;
   plugPosts = plugPosts.filter(p => p.id !== postId);
   return plugPosts.length < initialLength;
 };
 
 // Add a comment to a plug post
-export const addPlugComment = (postId: string, comment: Omit<PlugComment, 'id' | 'timestamp'>): PlugComment | null => {
+export const addPlugComment = async (postId: string, comment: Omit<PlugComment, 'id' | 'timestamp'>): Promise<void> => {
   const postIndex = plugPosts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+  if (postIndex === -1) return;
 
   const newComment: PlugComment = {
     ...comment,
@@ -93,23 +94,20 @@ export const addPlugComment = (postId: string, comment: Omit<PlugComment, 'id' |
   };
 
   plugPosts[postIndex].comments.push(newComment);
-  return newComment;
 };
 
 // Toggle upvote on a plug post
-export const togglePlugUpvote = (postId: string): PlugPost | null => {
+export const togglePlugUpvote = async (postId: string): Promise<void> => {
   const postIndex = plugPosts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+  if (postIndex === -1) return;
 
   plugPosts[postIndex].upvotes += 1;
-  return plugPosts[postIndex];
 };
 
 // Toggle downvote on a plug post
-export const togglePlugDownvote = (postId: string): PlugPost | null => {
+export const togglePlugDownvote = async (postId: string): Promise<void> => {
   const postIndex = plugPosts.findIndex(p => p.id === postId);
-  if (postIndex === -1) return null;
+  if (postIndex === -1) return;
 
   plugPosts[postIndex].downvotes += 1;
-  return plugPosts[postIndex];
 };

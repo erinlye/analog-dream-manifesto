@@ -12,11 +12,13 @@ const Plugs = () => {
   const [posts, setPosts] = useState<PlugPost[]>([]);
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
   
-  const loadPosts = () => {
+  const loadPosts = async () => {
     if (sortBy === 'recent') {
-      setPosts(getAllPlugPosts());
+      const allPosts = await getAllPlugPosts();
+      setPosts(allPosts);
     } else {
-      setPosts(getPlugPostsByPopularity());
+      const popularPosts = await getPlugPostsByPopularity();
+      setPosts(popularPosts);
     }
   };
   
