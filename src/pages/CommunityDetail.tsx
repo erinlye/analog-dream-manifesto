@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -93,6 +92,7 @@ const CommunityDetail = () => {
         title: "Community joined",
         description: `You are now a member of ${community?.name}`
       });
+      // Invalidate both community and membership queries to refresh the UI
       queryClient.invalidateQueries({ queryKey: ['community', slug] });
       queryClient.invalidateQueries({ queryKey: ['community-membership', slug, user?.id] });
     },
@@ -132,6 +132,7 @@ const CommunityDetail = () => {
         title: "Left community",
         description: `You are no longer a member of ${community?.name}`
       });
+      // Invalidate both community and membership queries to refresh the UI
       queryClient.invalidateQueries({ queryKey: ['community', slug] });
       queryClient.invalidateQueries({ queryKey: ['community-membership', slug, user?.id] });
     },
